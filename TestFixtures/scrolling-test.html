@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LocalShot 滚动截图验收页</title>
+  <style>
+    :root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #10233f; background: #edf7fb; }
+    header {
+      position: sticky; top: 0; z-index: 10; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; color: white; background: #0b2c55;
+      box-shadow: 0 3px 12px rgba(15, 35, 65, .22);
+    }
+    header strong { font-size: 22px; }
+    .indicator { width: 96px; height: 10px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.24); }
+    .indicator::after {
+      content: ""; display: block; width: 24px; height: 10px; border-radius: inherit; background: #3fe0d0;
+      animation: move 1.6s ease-in-out infinite alternate;
+    }
+    main { width: min(980px, calc(100% - 48px)); margin: 34px auto 80px; }
+    .intro { padding: 30px; border-radius: 24px; background: white; box-shadow: 0 8px 26px rgba(30,70,110,.10); }
+    .intro h1 { margin: 0 0 12px; font-size: 34px; }
+    .section {
+      min-height: 440px; margin-top: 28px; padding: 34px; border-radius: 24px;
+      background: linear-gradient(135deg, white, var(--tint));
+      border: 1px solid rgba(30, 95, 135, .16);
+    }
+    .section h2 { margin: 0 0 18px; font-size: 30px; }
+    .marker { font: 700 18px ui-monospace, SFMono-Regular, Menlo, monospace; color: #0b7184; }
+    .bars { display: grid; gap: 14px; margin-top: 38px; }
+    .bars span { display: block; height: 22px; border-radius: 8px; background: var(--bar); }
+    .bars span:nth-child(2) { width: 82%; opacity: .74; }
+    .bars span:nth-child(3) { width: 64%; opacity: .52; }
+    footer { padding: 38px; text-align: center; color: #486179; }
+    @keyframes move { from { transform: translateX(0); } to { transform: translateX(72px); } }
+    @media (prefers-reduced-motion: reduce) { .indicator::after { animation: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>LocalShot 离线滚动截图验收页</strong>
+    <div class="indicator" aria-label="小范围动画指示器"></div>
+  </header>
+  <main>
+    <section class="intro">
+      <h1>固定标题、重复纹理与小范围动画</h1>
+      <p>此页面不加载任何远程资源，用于验证鼠标手动滚动、固定顶部剔除和纵向拼接。</p>
+    </section>
+    <section class="section" style="--tint:#dff8f5;--bar:#16a6a0"><div class="marker">LOCALSHOT-SECTION-01</div><h2>第一段 · 捕获开始</h2><p>应只保留一次顶部导航栏。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#e5efff;--bar:#3478d4"><div class="marker">LOCALSHOT-SECTION-02</div><h2>第二段 · 稳定重叠</h2><p>相邻画面包含足够的正文重叠。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#fff2df;--bar:#e37b22"><div class="marker">LOCALSHOT-SECTION-03</div><h2>第三段 · 色彩变化</h2><p>不同背景帮助检查拼接边界。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#efe7ff;--bar:#7954c8"><div class="marker">LOCALSHOT-SECTION-04</div><h2>第四段 · 文字标记</h2><p>标记编号必须连续且不重复。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#e1f5ff;--bar:#1584b6"><div class="marker">LOCALSHOT-SECTION-05</div><h2>第五段 · 中间位置</h2><p>长图中段不应出现明显断层。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#e9f8e2;--bar:#4c9b3c"><div class="marker">LOCALSHOT-SECTION-06</div><h2>第六段 · 固定标题</h2><p>标题内动画不能阻止正文终点判断。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#fff0f2;--bar:#d24f66"><div class="marker">LOCALSHOT-SECTION-07</div><h2>第七段 · 持续采集</h2><p>滚动步幅应保持稳定。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#f2f3ff;--bar:#5d68c9"><div class="marker">LOCALSHOT-SECTION-08</div><h2>第八段 · 纹理重复</h2><p>重复条形不能造成错误对齐。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#e2f8f0;--bar:#178b68"><div class="marker">LOCALSHOT-SECTION-09</div><h2>第九段 · 接近尾部</h2><p>应继续捕获直到页面停止移动。</p><div class="bars"><span></span><span></span><span></span></div></section>
+    <section class="section" style="--tint:#fff5df;--bar:#be841b"><div class="marker">LOCALSHOT-SECTION-10</div><h2>第十段 · 最终区块</h2><p>这一编号应出现在最终长图底部。</p><div class="bars"><span></span><span></span><span></span></div></section>
+  </main>
+  <footer>LOCALSHOT-SCROLL-END · 到达此处后应自动停止</footer>
+</body>
+</html>

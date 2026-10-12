@@ -1,0 +1,70 @@
+name: LocalShot-AppStore
+
+options:
+  createIntermediateGroups: true
+
+packages:
+  LocalShotPackage:
+    path: .
+
+settings:
+  base:
+    ARCHS: arm64 x86_64
+    CODE_SIGN_STYLE: Automatic
+    CURRENT_PROJECT_VERSION: 1
+    MACOSX_DEPLOYMENT_TARGET: 14.0
+    MARKETING_VERSION: 1.0.0
+    PRODUCT_BUNDLE_IDENTIFIER: com.localshot.appstore
+    SDKROOT: macosx
+    SWIFT_VERSION: 6.0
+
+targets:
+  LocalShot-AppStore:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources/LocalShot
+        excludes:
+          - Capture/SystemScreenshotAdapter.swift
+    resources:
+      - path: Support/LocalShot.icns
+      - path: Support/PrivacyInfo.xcprivacy
+      - path: PRIVACY.md
+    dependencies:
+      - package: LocalShotPackage
+        product: LocalShotCore
+      - package: LocalShotPackage
+        product: LocalShotEditing
+      - package: LocalShotPackage
+        product: LocalShotVision
+      - package: LocalShotPackage
+        product: LocalShotTranslation
+      - package: LocalShotPackage
+        product: LocalShotBeautification
+      - package: LocalShotPackage
+        product: LocalShotScrolling
+      - package: LocalShotPackage
+        product: LocalShotHotkeys
+      - package: LocalShotPackage
+        product: LocalShotHistoryIndex
+    settings:
+      base:
+        CODE_SIGN_ENTITLEMENTS: Support/LocalShot-AppStore.entitlements
+        COMBINE_HIDPI_IMAGES: true
+        ENABLE_APP_SANDBOX: true
+        ENABLE_HARDENED_RUNTIME: true
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: Support/Info-AppStore.plist
+        PRODUCT_NAME: LocalShot
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: $(inherited) APP_STORE
+
+schemes:
+  LocalShot-AppStore:
+    build:
+      targets:
+        LocalShot-AppStore: all
+    run:
+      config: Debug
+    archive:
+      config: Release

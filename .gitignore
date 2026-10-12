@@ -1,0 +1,37 @@
+.build/
+.build-*/
+build/
+build-archive/
+license-admin-build/
+dist/
+.swiftpm/
+DerivedData/
+.DS_Store
+
+# Xcode 本机用户状态
+xcuserdata/
+*.xcuserstate
+
+# 可重新生成的发布压缩包
+*.dmg
+*.zip
+
+# 本机凭据与签名证书
+.env
+.env.*
+!.env.example
+Secrets/
+secrets/
+LocalSecrets/
+*.p12
+*.pfx
+*.pem
+*.key
+*.privatekey
+*.licensekey
+*.mobileprovision
+
+# 本地工作记录不进入公开源码
+/task_plan.md
+/findings.md
+/progress.md
