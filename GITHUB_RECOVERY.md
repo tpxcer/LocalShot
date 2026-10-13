@@ -18,12 +18,14 @@ sh scripts/package-app.sh
 
 ## 恢复安装包
 
-在 [LocalShot-Downloads Releases](https://github.com/tpxcer/LocalShot-Downloads/releases) 下载当前安装包。对应版本源码可从本源码仓库相同版本标签下载。
+在 [LocalShot Releases](https://github.com/tpxcer/LocalShot/releases) 下载当前安装包。对应版本源码可从本仓库相同版本标签下载，安装方法见 [INSTALL.md](INSTALL.md)。
+
+0.4.0（Build 20）及以前版本使用旧更新源，需手动下载安装一次 0.4.1（Build 21）或更新版本。之后会从本仓库检查和下载更新。
 
 ## 用户数据
 
 GitHub 保存代码和发布文件；截图、录屏、设置与历史索引保存在使用者本机。需要在电脑丢失后恢复这些本地数据时，应另行使用 Time Machine 等方式备份。
 
-## 维护者归档
+## 历史备份边界
 
-此前私有开发历史保留在 `tpxcer/LocalShot-Private-Archive`，仅仓库所有者可访问。公开仓库从经过清理的源码快照开始维护。
+GitHub 只保留本开源仓库。旧下载仓库和旧私有源码归档已由维护者备份到本机后移除；旧开发历史不在公开仓库中，不能仅依靠 GitHub 恢复。当前完整源码和安装包继续在本仓库维护。

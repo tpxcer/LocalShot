@@ -4,7 +4,11 @@ LocalShot 是一款开源、纯本地的 macOS 截图与录屏工具，支持 Ap
 
 从 **0.4.0（Build 20）** 开始，所有功能安装后直接可用，无需机器码、授权码或激活。源码采用 **GNU GPL v3（GPL-3.0-only）**，允许使用、修改和再分发；分发修改版时须遵守 GPL v3 的源码公开和许可证要求。
 
-[下载安装包](https://github.com/tpxcer/LocalShot-Downloads/releases/latest) · [安装说明与功能展示](https://github.com/tpxcer/LocalShot-Downloads) · [反馈问题](https://github.com/tpxcer/LocalShot/issues)
+[下载安装包](https://github.com/tpxcer/LocalShot/releases/latest) · [安装说明](INSTALL.md) · [功能展示](#软件截图) · [反馈问题](https://github.com/tpxcer/LocalShot/issues)
+
+当前版本：**0.4.1（Build 21）**。源码、安装包、功能展示和后续更新统一在本仓库维护。
+
+> 0.4.0（Build 20）及以前版本使用旧更新源，需要手动下载安装一次 Build 21 或更新版本，之后才能继续在软件内检查更新。升级前请备份重要截图，或将旧版“自动清理”改为“永久保留”；启动新版仍会按原保留期限清理过期截图。
 
 ## 系统要求
 
@@ -42,6 +46,36 @@ LocalShot 是一款开源、纯本地的 macOS 截图与录屏工具，支持 Ap
 - 可在设置中使用 macOS 官方登录项机制控制开机启动，并显示是否需要系统批准。
 - 直接分发版默认每 24 小时查询一次公开 GitHub Release；可关闭自动检查，也可手动检查。发现新版后由用户确认下载，SHA-256 校验通过才会保存到“下载”并打开 DMG。
 - 原创应用图标由项目内 Core Graphics 脚本生成，不依赖外部素材。
+
+## 软件截图
+
+以下图片来自项目自带的虚构验收页面，不包含私人截图。Build 21 只迁移发布与更新入口，截图和录屏界面不变。
+
+### 快捷截图与标注
+
+区域选择、方形像素放大镜、液态玻璃工具栏和即时标注。
+
+![快捷截图工具栏与标注](assets/screenshots/01-quick-capture-toolbar.png)
+
+### 手动区域长截图
+
+选区框持续显示，使用鼠标或触控板滚动；预览实时显示拼接过程并自动缩小。
+
+![区域长截图入口](assets/screenshots/02-scrolling-capture-entry.png)
+
+<img src="assets/screenshots/03-scrolling-live-preview.png" alt="长截图实时拼接预览" width="300">
+
+### 锁定窗口录屏
+
+支持窗口跟随、持续红框、系统声音、麦克风、倒计时、暂停/继续、30/60 FPS 与画质选择。
+
+![锁定窗口录屏与控制条](assets/screenshots/05-window-lock-recording.png)
+
+### 完整标注编辑器
+
+图片可继续裁剪、标注、撤销和导出；演示页面、邮箱和订单内容均为虚构。
+
+![完整标注编辑器](assets/screenshots/04-annotation-editor.png)
 
 ## 当前不包含
 

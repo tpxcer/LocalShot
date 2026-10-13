@@ -105,7 +105,7 @@ public enum LocalShotUpdateError: LocalizedError, Equatable {
 
 public enum LocalShotUpdateCatalog {
     public static let releasesAPIURL = URL(
-        string: "https://api.github.com/repos/tpxcer/LocalShot-Downloads/releases?per_page=20"
+        string: "https://api.github.com/repos/tpxcer/LocalShot/releases?per_page=20"
     )!
 
     public static func latestRelease(
@@ -205,7 +205,7 @@ public enum LocalShotUpdateCatalog {
         guard url.scheme == "https", url.host == "github.com" else {
             return false
         }
-        let expectedPath = "/tpxcer/LocalShot-Downloads/releases/download/\(tagName)/\(assetName)"
+        let expectedPath = "/tpxcer/LocalShot/releases/download/\(tagName)/\(assetName)"
         return url.path == expectedPath
     }
 }

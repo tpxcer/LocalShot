@@ -1,6 +1,6 @@
 # LocalShot 隐私说明
 
-更新日期：2026 年 10 月 12 日
+更新日期：2026 年 10 月 13 日
 
 LocalShot 是纯本地 macOS 截图与区域录屏工具。当前版本不提供账号、云同步、团队协作、广告或在线存储服务。
 
@@ -46,7 +46,7 @@ LocalShot 不会绕过系统权限，也不会在用户未操作时自行开启�
 
 ## 网络与第三方
 
-LocalShot 不运营云服务。直接分发版本的更新模块会访问 `api.github.com` 查询 `tpxcer/LocalShot-Downloads` 的公开 Release：
+LocalShot 不运营云服务。直接分发版本的更新模块会访问 `api.github.com` 查询 `tpxcer/LocalShot` 的公开 Release：
 
 - 自动检查默认开启，每 24 小时最多一次，可在设置中关闭；手动检查只在用户点击时发生。
 - 请求不包含截图、录屏、OCR 文字、历史、文件路径或使用记录。

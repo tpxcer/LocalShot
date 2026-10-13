@@ -24,7 +24,7 @@ do {
               "name": "LocalShot-0.1.2-build5-offline-license-arm64.dmg",
               "size": 123456,
               "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-              "browser_download_url": "https://github.com/tpxcer/LocalShot-Downloads/releases/download/v0.1.2-build5/LocalShot-0.1.2-build5-offline-license-arm64.dmg"
+              "browser_download_url": "https://github.com/tpxcer/LocalShot/releases/download/v0.1.2-build5/LocalShot-0.1.2-build5-offline-license-arm64.dmg"
             }]
           },
           {
@@ -41,7 +41,7 @@ do {
               "name": "LocalShot-0.1.1-build4-offline-license-arm64.dmg",
               "size": 120000,
               "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-              "browser_download_url": "https://github.com/tpxcer/LocalShot-Downloads/releases/download/v0.1.1-build4/LocalShot-0.1.1-build4-offline-license-arm64.dmg"
+              "browser_download_url": "https://github.com/tpxcer/LocalShot/releases/download/v0.1.1-build4/LocalShot-0.1.1-build4-offline-license-arm64.dmg"
             }]
           }
         ]
@@ -51,6 +51,21 @@ do {
     try require(latest.version == LocalShotVersion(marketingVersion: "0.1.2", build: 5), "最新版本选择错误")
     try require(latest.name == "v0.1.2-build5", "空 Release 名称未回退到标签")
     try require(latest.asset.sha256 == String(repeating: "a", count: 64), "SHA-256 解析错误")
+    try require(
+        LocalShotUpdateCatalog.releasesAPIURL.absoluteString
+            == "https://api.github.com/repos/tpxcer/LocalShot/releases?per_page=20",
+        "更新源没有迁移到开源仓库"
+    )
+    let retiredRepositoryData = Data(
+        String(decoding: data, as: UTF8.self)
+            .replacingOccurrences(of: "/tpxcer/LocalShot/", with: "/tpxcer/LocalShot-Downloads/")
+            .utf8
+    )
+    do {
+        _ = try LocalShotUpdateCatalog.latestRelease(from: retiredRepositoryData)
+        throw CheckError.failed("旧仓库下载地址未被拒绝")
+    } catch LocalShotUpdateError.noCompatibleRelease {
+    }
     try require(
         LocalShotVersion(marketingVersion: "1.0", build: 1)!
             > LocalShotVersion(marketingVersion: "0.9.99", build: 99)!,
@@ -73,7 +88,7 @@ do {
               "name": "LocalShot-0.3.2-build16-offline-license-arm64.dmg",
               "size": 160000,
               "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-              "browser_download_url": "https://github.com/tpxcer/LocalShot-Downloads/releases/download/v0.3.2-build16/LocalShot-0.3.2-build16-offline-license-arm64.dmg"
+              "browser_download_url": "https://github.com/tpxcer/LocalShot/releases/download/v0.3.2-build16/LocalShot-0.3.2-build16-offline-license-arm64.dmg"
             }]
           },
           {
@@ -85,13 +100,13 @@ do {
                 "name": "LocalShot-0.3.1-build15-offline-license-arm64.dmg",
                 "size": 150000,
                 "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                "browser_download_url": "https://github.com/tpxcer/LocalShot-Downloads/releases/download/v0.3.1-build15/LocalShot-0.3.1-build15-offline-license-arm64.dmg"
+                "browser_download_url": "https://github.com/tpxcer/LocalShot/releases/download/v0.3.1-build15/LocalShot-0.3.1-build15-offline-license-arm64.dmg"
               },
               {
                 "name": "LocalShot-0.3.1-build15-offline-license-universal2-arm64-x86_64.dmg",
                 "size": 250000,
                 "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-                "browser_download_url": "https://github.com/tpxcer/LocalShot-Downloads/releases/download/v0.3.1-build15/LocalShot-0.3.1-build15-offline-license-universal2-arm64-x86_64.dmg"
+                "browser_download_url": "https://github.com/tpxcer/LocalShot/releases/download/v0.3.1-build15/LocalShot-0.3.1-build15-offline-license-universal2-arm64-x86_64.dmg"
               }
             ]
           }

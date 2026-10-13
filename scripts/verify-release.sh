@@ -126,7 +126,7 @@ if grep -F 'if let frozenSelectionImage = result.frozenSelectionImage' \
 fi
 
 UPDATER_SOURCE="Sources/LocalShotUpdater/LocalShotUpdateService.swift"
-EXPECTED_UPDATE_URL="https://api.github.com/repos/tpxcer/LocalShot-Downloads/releases?per_page=20"
+EXPECTED_UPDATE_URL="https://api.github.com/repos/tpxcer/LocalShot/releases?per_page=20"
 test -f "$UPDATER_SOURCE"
 test "$(rg -o 'https?://[^"]+' "$UPDATER_SOURCE")" = "$EXPECTED_UPDATE_URL"
 grep -F 'URLSessionConfiguration.ephemeral' "$UPDATER_SOURCE" >/dev/null
