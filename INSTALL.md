@@ -7,7 +7,7 @@
 
 ## 下载与安装
 
-1. 从 [Framo Releases](https://github.com/tpxcer/LocalShot/releases/latest) 下载 `LocalShot-2026.11.2-build23-open-source-universal2-arm64-x86_64.dmg`。
+1. 从 [Framo Releases](https://github.com/tpxcer/LocalShot/releases/latest) 下载 `LocalShot-2026.11.2-build24-open-source-universal2-arm64-x86_64.dmg`。
 2. 双击打开 DMG，将 `LocalShot.app`（访达中显示为 Framo）拖入“应用程序”文件夹，覆盖旧版即可。
 3. 在“应用程序”中打开 Framo。全部功能直接可用，无需机器码或授权码。
 
@@ -39,7 +39,7 @@ Build 17 起新录屏与截图共用保存目录；旧版 `Application Support/L
 将 DMG 和同一 Release 的校验文件放到同一目录，在终端运行：
 
 ```bash
-shasum -a 256 -c SHA256SUMS-v2026.11.2-build23-public.txt
+shasum -a 256 -c SHA256SUMS-v2026.11.2-build24-public.txt
 ```
 
 看到 `OK` 表示文件与发布版本一致。对应源码在本仓库的同名版本标签中。
