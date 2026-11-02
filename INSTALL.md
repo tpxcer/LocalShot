@@ -7,7 +7,7 @@
 
 ## 下载与安装
 
-1. 从 [LocalShot Releases](https://github.com/tpxcer/LocalShot/releases/latest) 下载 `LocalShot-0.4.1-build21-open-source-universal2-arm64-x86_64.dmg`。
+1. 从 [LocalShot Releases](https://github.com/tpxcer/LocalShot/releases/latest) 下载 `LocalShot-0.4.2-build22-open-source-universal2-arm64-x86_64.dmg`。
 2. 双击打开 DMG，将 `LocalShot.app` 拖入“应用程序”文件夹。
 3. 在“应用程序”中打开 LocalShot。全部功能直接可用，无需机器码或授权码。
 
@@ -23,7 +23,7 @@
 
 0.4.0（Build 20）及以前版本使用的旧下载仓库已经移除，不能再从旧软件内检查更新。请手动下载安装一次 Build 21 或更新版本；之后软件会从本开源仓库检查和下载后续更新。
 
-升级前请备份重要截图，或在旧版设置中将“自动清理”改为“永久保留”。截图、录屏、历史和设置在应用包之外，但启动新版仍会执行原有保留策略，过期截图可能被永久删除。
+升级前请备份重要截图，或在旧版设置中将“自动清理”改为“永久保留”。截图、录屏、历史和设置在应用包之外，如果旧版设置过自动清理期限，启动新版仍会按该期限执行，过期截图可能被永久删除；从未设置过的，Build 22 起默认永久保留。
 
 Build 17 起新录屏与截图共用保存目录；旧版 `Application Support/LocalShot/Recordings` 内的视频不会自动移动或删除。Build 18 起“最近保存”同时显示截图和录屏，“清空记录”不勾选删除文件时只隐藏记录。
 
@@ -39,7 +39,7 @@ Build 17 起新录屏与截图共用保存目录；旧版 `Application Support/L
 将 DMG 和同一 Release 的校验文件放到同一目录，在终端运行：
 
 ```bash
-shasum -a 256 -c SHA256SUMS-v0.4.1-build21-public.txt
+shasum -a 256 -c SHA256SUMS-v0.4.2-build22-public.txt
 ```
 
 看到 `OK` 表示文件与发布版本一致。对应源码在本仓库的同名版本标签中。
