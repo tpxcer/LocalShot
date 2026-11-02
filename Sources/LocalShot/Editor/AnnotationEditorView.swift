@@ -18,30 +18,53 @@ struct AnnotationEditorView: View {
                     .padding(.bottom, 8)
             }
         }
+        .tint(LocalShotTheme.accent)
     }
 
+    private let toolGroups: [[AnnotationEditorTool]] = [
+        [.select, .crop],
+        [.arrow, .line, .rectangle, .ellipse],
+        [.pen, .highlight],
+        [.text, .step],
+        [.spotlight, .pixelate, .redaction]
+    ]
+
     private var toolbar: some View {
-        VStack(spacing: 7) {
+        VStack(spacing: 8) {
             HStack(spacing: 8) {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 7) {
-                        ForEach(AnnotationEditorTool.allCases) { tool in
-                            Button {
-                                model.selectedTool = tool
-                            } label: {
-                                Image(systemName: tool.symbolName)
-                                    .frame(width: 20, height: 20)
+                    HStack(spacing: 8) {
+                        ForEach(toolGroups, id: \.self) { group in
+                            HStack(spacing: 2) {
+                                ForEach(group) { tool in
+                                    Button {
+                                        model.selectedTool = tool
+                                    } label: {
+                                        Image(systemName: tool.symbolName)
+                                    }
+                                    .buttonStyle(
+                                        LocalShotIconButtonStyle(
+                                            isSelected: model.selectedTool == tool,
+                                            isGrouped: true
+                                        )
+                                    )
+                                    .help(tool.label)
+                                    .accessibilityLabel(tool.label)
+                                }
                             }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
-                            .tint(model.selectedTool == tool ? .accentColor : .secondary)
-                            .help(tool.label)
-                            .accessibilityLabel(tool.label)
+                            .padding(3)
+                            .background(
+                                LocalShotTheme.card,
+                                in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+                            )
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                    .stroke(LocalShotTheme.cardStroke, lineWidth: 1)
+                            }
                         }
                     }
+                    .padding(1)
                 }
-
-                Divider().frame(height: 24)
 
                 Button("导出", systemImage: "square.and.arrow.down") {
                     model.exportAs()
@@ -57,14 +80,15 @@ struct AnnotationEditorView: View {
                         Circle()
                             .fill(preset.swiftUIColor)
                             .overlay {
-                                Circle().stroke(
-                                    model.selectedColor == preset
-                                        ? Color.accentColor
-                                        : Color.secondary.opacity(0.45),
-                                    lineWidth: model.selectedColor == preset ? 3 : 1
-                                )
+                                Circle().stroke(Color.black.opacity(0.15), lineWidth: 1)
                             }
-                            .frame(width: 18, height: 18)
+                            .frame(width: 20, height: 20)
+                            .padding(3)
+                            .overlay {
+                                if model.selectedColor == preset {
+                                    Circle().stroke(LocalShotTheme.accent, lineWidth: 2)
+                                }
+                            }
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("颜色 \(preset.rawValue)")
@@ -75,14 +99,18 @@ struct AnnotationEditorView: View {
                     .help("线宽或工具大小")
                     .accessibilityLabel("线宽或工具大小")
 
+                Text("\(Int(model.lineWidth)) pt")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .frame(width: 34, alignment: .leading)
+
                 if model.selectedTool == .line {
                     Button {
                         model.lineIsDashed.toggle()
                     } label: {
                         Image(systemName: "line.diagonal")
                     }
-                    .buttonStyle(.bordered)
-                    .tint(model.lineIsDashed ? .accentColor : .secondary)
+                    .buttonStyle(LocalShotIconButtonStyle(isSelected: model.lineIsDashed))
                     .help(model.lineIsDashed ? "使用虚线" : "使用实线")
                     .accessibilityLabel("切换实线或虚线")
                     .accessibilityValue(model.lineIsDashed ? "虚线" : "实线")
@@ -183,10 +211,11 @@ struct AnnotationEditorView: View {
                     .accessibilityLabel("重置裁剪")
                 }
             }
+            .buttonStyle(LocalShotIconButtonStyle())
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .frame(height: 96)
-        .background(.bar)
+        .frame(height: 100)
+        .background(LocalShotTheme.background)
     }
 }

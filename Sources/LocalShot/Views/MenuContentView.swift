@@ -88,6 +88,10 @@ struct MenuContentView: View {
                 }
             }
 
+            Button("查看全部历史…", systemImage: "clock.arrow.circlepath") {
+                model.openCaptureHistory()
+            }
+
             Button("打开目录", systemImage: "folder") {
                 model.openCaptureDirectory()
             }

@@ -26,6 +26,7 @@ struct OCRResultView: View {
                 .disabled(model.combinedText.isEmpty)
             }
             .padding(16)
+            .background(LocalShotTheme.background)
 
             Divider()
 
@@ -83,5 +84,6 @@ struct OCRResultView: View {
             }
         }
         .frame(minWidth: 520, minHeight: 420)
+        .tint(LocalShotTheme.accent)
     }
 }

@@ -51,7 +51,7 @@ struct CaptureHistoryView: View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
                 Text("截图历史")
-                    .font(.title2.weight(.semibold))
+                    .font(.title2.weight(.bold))
 
                 Spacer()
 
@@ -126,6 +126,8 @@ struct CaptureHistoryView: View {
             }
         }
         .frame(minWidth: 700, minHeight: 480)
+        .background(LocalShotTheme.background)
+        .tint(LocalShotTheme.accent)
     }
 
     private var filteredAssets: [CaptureAsset] {
@@ -157,11 +159,14 @@ struct CaptureHistoryView: View {
             appModel.showQuickAccess(for: asset)
         } label: {
             VStack(alignment: .leading, spacing: 9) {
-                Image(nsImage: NSImage(contentsOf: asset.url) ?? NSImage())
-                    .resizable()
-                    .scaledToFill()
+                Color.clear
                     .frame(height: 112)
                     .frame(maxWidth: .infinity)
+                    .overlay {
+                        Image(nsImage: CaptureThumbnail.image(for: asset.url, maxPixelSize: 600))
+                            .resizable()
+                            .scaledToFill()
+                    }
                     .clipped()
                     .background(.quaternary)
                     .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
@@ -188,10 +193,10 @@ struct CaptureHistoryView: View {
                     .truncationMode(.middle)
             }
             .padding(10)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(LocalShotTheme.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(.quaternary, lineWidth: 1)
+                    .stroke(LocalShotTheme.cardStroke, lineWidth: 1)
             }
         }
         .buttonStyle(.plain)

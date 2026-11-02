@@ -7,7 +7,7 @@ struct QuickAccessView: View {
     let actions: QuickAccessActions
 
     private var previewImage: NSImage {
-        NSImage(contentsOf: asset.url) ?? NSImage()
+        CaptureThumbnail.image(for: asset.url, maxPixelSize: 360)
     }
 
     var body: some View {
@@ -15,60 +15,87 @@ struct QuickAccessView: View {
             Image(nsImage: previewImage)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 88, height: 80)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .frame(width: 96, height: 86)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(.quaternary, lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(LocalShotTheme.card, lineWidth: 2)
                 }
+                .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
                 .onDrag {
                     NSItemProvider(contentsOf: asset.url) ?? NSItemProvider()
                 }
 
             VStack(alignment: .leading, spacing: 10) {
-                VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 8) {
                     Text(asset.mode.displayName)
                         .font(.headline)
-                    Text(asset.createdAt.formatted(date: .omitted, time: .standard))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    LocalShotTag(text: asset.createdAt.formatted(date: .omitted, time: .standard))
+                    Spacer(minLength: 0)
+                    iconButton("xmark", label: "关闭", action: actions.dismiss)
                 }
 
-                HStack(spacing: 8) {
-                    actionButton("doc.on.doc", label: "复制", action: actions.copy)
-                    actionButton("pencil.and.outline", label: "标注", action: actions.annotate)
-                    actionButton("sparkles", label: "图片美化", action: actions.beautify)
-                    actionButton("pin", label: "置顶截图", action: actions.pin)
-                    actionButton("text.viewfinder", label: "识别文字", action: actions.recognizeText)
-                    actionButton("character.bubble", label: "原位置翻译", action: actions.translate)
-                    actionButton("square.and.arrow.down", label: "另存为", action: actions.saveAs)
-                    actionButton("folder", label: "在 Finder 中显示", action: actions.reveal)
-                    actionButton("trash", label: "删除", role: .destructive, action: actions.delete)
-                    Spacer(minLength: 0)
-                    actionButton("xmark", label: "关闭", action: actions.dismiss)
+                HStack(spacing: 6) {
+                    Button(action: actions.copy) {
+                        Label("复制", systemImage: "doc.on.doc")
+                    }
+                    .buttonStyle(LocalShotIconButtonStyle(isSelected: true, horizontalPadding: 9))
+                    .help("复制")
+
+                    Button(action: actions.annotate) {
+                        Label("标注", systemImage: "pencil.and.outline")
+                    }
+                    .buttonStyle(LocalShotIconButtonStyle(horizontalPadding: 9))
+                    .help("标注")
+
+                    iconButton("sparkles", label: "图片美化", action: actions.beautify)
+                    iconButton("pin", label: "置顶截图", action: actions.pin)
+                    iconButton("text.viewfinder", label: "识别文字", action: actions.recognizeText)
+                    iconButton("character.bubble", label: "原位置翻译", action: actions.translate)
+
+                    Menu {
+                        Button("另存为…", systemImage: "square.and.arrow.down", action: actions.saveAs)
+                        Button("在 Finder 中显示", systemImage: "folder", action: actions.reveal)
+                        Divider()
+                        Button("删除", systemImage: "trash", role: .destructive, action: actions.delete)
+                    } label: {
+                        Image(systemName: "ellipsis")
+                    }
+                    .menuStyle(.borderlessButton)
+                    .menuIndicator(.hidden)
+                    .frame(width: 28, height: 26)
+                    .background(
+                        LocalShotTheme.card,
+                        in: RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    )
+                    .help("更多")
+                    .accessibilityLabel("更多")
                 }
+                .controlSize(.small)
             }
         }
         .padding(12)
         .frame(width: 456, height: 112)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(
+            LocalShotTheme.background,
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+        )
         .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(.quaternary, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(LocalShotTheme.cardStroke, lineWidth: 1)
         }
+        .tint(LocalShotTheme.accent)
     }
 
-    private func actionButton(
+    private func iconButton(
         _ symbol: String,
         label: String,
-        role: ButtonRole? = nil,
         action: @escaping () -> Void
     ) -> some View {
-        Button(role: role, action: action) {
+        Button(action: action) {
             Image(systemName: symbol)
-                .frame(width: 18, height: 18)
         }
-        .buttonStyle(.borderless)
+        .buttonStyle(LocalShotIconButtonStyle())
         .help(label)
         .accessibilityLabel(label)
     }

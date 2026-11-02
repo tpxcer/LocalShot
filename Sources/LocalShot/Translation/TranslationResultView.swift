@@ -57,6 +57,7 @@ struct TranslationResultView: View {
                 .disabled(model.translatedBlocks.isEmpty)
             }
             .padding(14)
+            .background(LocalShotTheme.background)
 
             Divider()
 
@@ -122,6 +123,7 @@ struct TranslationResultView: View {
             }
         }
         .frame(minWidth: 920, minHeight: 620)
+        .tint(LocalShotTheme.accent)
         .translationTask(model.configuration) { session in
             await translate(using: session)
         }

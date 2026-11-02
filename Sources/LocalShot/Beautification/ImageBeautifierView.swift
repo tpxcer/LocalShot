@@ -27,6 +27,7 @@ struct ImageBeautifierView: View {
                 .buttonStyle(.borderedProminent)
             }
             .padding(14)
+            .background(LocalShotTheme.background)
 
             Divider()
 
@@ -101,6 +102,7 @@ struct ImageBeautifierView: View {
             }
         }
         .frame(minWidth: 820, minHeight: 560)
+        .tint(LocalShotTheme.accent)
     }
 
     private func controlSection<Content: View>(

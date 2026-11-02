@@ -1522,6 +1522,33 @@ final class AppModel: ObservableObject {
         }
     }
 
+    func setRetentionDays(_ days: Int) {
+        guard days != settings.retentionDays else {
+            return
+        }
+        if days > 0 {
+            let cutoff = Date().addingTimeInterval(-Double(days) * 24 * 60 * 60)
+            let expiredCount = (try? fileStore.recentCaptures(limit: nil))?
+                .filter { $0.createdAt < cutoff }
+                .count ?? 0
+            if expiredCount > 0 {
+                let alert = NSAlert()
+                alert.alertStyle = .warning
+                alert.messageText = "立即删除 \(expiredCount) 张旧截图？"
+                alert.informativeText = "改为 \(days) 天后自动清理，会立即永久删除超过 \(days) 天的 \(expiredCount) 张 LocalShot 截图及对应标注项目，无法撤销。之后每次启动 LocalShot 也会按此期限清理。"
+                alert.addButton(withTitle: "删除并应用")
+                alert.addButton(withTitle: "取消")
+                guard alert.runModal() == .alertFirstButtonReturn else {
+                    settings.objectWillChange.send()
+                    return
+                }
+            }
+        }
+        settings.retentionDays = days
+        applyRetentionPolicy()
+        refreshHistory()
+    }
+
     func applyRetentionPolicy() {
         guard settings.retentionDays > 0 else {
             return

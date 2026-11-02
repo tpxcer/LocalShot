@@ -56,7 +56,7 @@ final class AppSettings: ObservableObject {
             ? true
             : defaults.bool(forKey: Keys.includesWindowShadow)
         retentionDays = defaults.object(forKey: Keys.retentionDays) == nil
-            ? 7
+            ? 0
             : defaults.integer(forKey: Keys.retentionDays)
         quickAccessDuration = defaults.object(forKey: Keys.quickAccessDuration) == nil
             ? 15
