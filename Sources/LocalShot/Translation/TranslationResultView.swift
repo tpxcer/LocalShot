@@ -57,7 +57,7 @@ struct TranslationResultView: View {
                 .disabled(model.translatedBlocks.isEmpty)
             }
             .padding(14)
-            .background(LocalShotTheme.background)
+            .background(LocalShotBackground().ignoresSafeArea(edges: .top))
 
             Divider()
 

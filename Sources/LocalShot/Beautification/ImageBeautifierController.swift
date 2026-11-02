@@ -12,11 +12,12 @@ final class ImageBeautifierController {
             let hostingController = NSHostingController(rootView: ImageBeautifierView(model: model))
             let window = NSWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 1080, height: 720),
-                styleMask: [.titled, .closable, .miniaturizable, .resizable],
+                styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
                 backing: .buffered,
                 defer: false
             )
             window.title = "图片美化 — \(asset.url.lastPathComponent)"
+            window.titlebarAppearsTransparent = true
             window.contentViewController = hostingController
             window.minSize = NSSize(width: 820, height: 560)
             window.center()

@@ -76,10 +76,10 @@ struct QuickAccessView: View {
         }
         .padding(12)
         .frame(width: 456, height: 112)
-        .background(
-            LocalShotTheme.background,
-            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
-        )
+        .background {
+            LocalShotBackground()
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
         .overlay {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(LocalShotTheme.cardStroke, lineWidth: 1)

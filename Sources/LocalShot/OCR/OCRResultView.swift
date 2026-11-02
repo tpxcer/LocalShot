@@ -26,7 +26,7 @@ struct OCRResultView: View {
                 .disabled(model.combinedText.isEmpty)
             }
             .padding(16)
-            .background(LocalShotTheme.background)
+            .background(LocalShotBackground().ignoresSafeArea(edges: .top))
 
             Divider()
 

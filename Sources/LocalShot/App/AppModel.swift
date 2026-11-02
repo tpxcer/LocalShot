@@ -421,11 +421,15 @@ final class AppModel: ObservableObject {
 
         Task { [self] in
             do {
+                let includesOwnWindows = !settings.hidesOwnWindowsWhenCapturing
                 let previews = try await service.captureDisplayPreviews(
                     scalesByDisplayID: scalesByDisplayID,
-                    showsCursor: settings.includesCursor
+                    showsCursor: settings.includesCursor,
+                    includesOwnWindows: includesOwnWindows
                 )
-                let candidates = (try? await service.availableWindows()) ?? []
+                let candidates = (try? await service.availableWindows(
+                    includesOwnWindows: includesOwnWindows
+                )) ?? []
                 qqCaptureOverlay.begin(
                     previewImages: previews,
                     candidates: candidates,
@@ -686,7 +690,9 @@ final class AppModel: ObservableObject {
         let service = ScreenCaptureKitService()
         Task { [self] in
             do {
-                let candidates = try await service.availableWindows()
+                let candidates = try await service.availableWindows(
+                    includesOwnWindows: !settings.hidesOwnWindowsWhenCapturing
+                )
                 guard !candidates.isEmpty else {
                     isCapturing = false
                     lastError = "没有找到可捕获的窗口。"
@@ -757,7 +763,8 @@ final class AppModel: ObservableObject {
                     outputURL: outputURL,
                     showsCursor: settings.includesCursor,
                     outputFormat: settings.outputFormat,
-                    jpegQuality: settings.jpegQuality
+                    jpegQuality: settings.jpegQuality,
+                    includesOwnWindows: !settings.hidesOwnWindowsWhenCapturing
                 )
                 finishCapture(url: capturedURL, mode: mode)
             } catch {

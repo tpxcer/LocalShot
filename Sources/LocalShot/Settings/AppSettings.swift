@@ -15,6 +15,9 @@ final class AppSettings: ObservableObject {
     @Published var includesWindowShadow: Bool {
         didSet { defaults.set(includesWindowShadow, forKey: Keys.includesWindowShadow) }
     }
+    @Published var hidesOwnWindowsWhenCapturing: Bool {
+        didSet { defaults.set(hidesOwnWindowsWhenCapturing, forKey: Keys.hidesOwnWindowsWhenCapturing) }
+    }
     @Published var retentionDays: Int {
         didSet { defaults.set(retentionDays, forKey: Keys.retentionDays) }
     }
@@ -55,6 +58,9 @@ final class AppSettings: ObservableObject {
         includesWindowShadow = defaults.object(forKey: Keys.includesWindowShadow) == nil
             ? true
             : defaults.bool(forKey: Keys.includesWindowShadow)
+        hidesOwnWindowsWhenCapturing = defaults.object(forKey: Keys.hidesOwnWindowsWhenCapturing) == nil
+            ? true
+            : defaults.bool(forKey: Keys.hidesOwnWindowsWhenCapturing)
         retentionDays = defaults.object(forKey: Keys.retentionDays) == nil
             ? 0
             : defaults.integer(forKey: Keys.retentionDays)
@@ -208,6 +214,7 @@ final class AppSettings: ObservableObject {
         static let jpegQuality = "capture.jpegQuality"
         static let includesCursor = "capture.includesCursor"
         static let includesWindowShadow = "capture.includesWindowShadow"
+        static let hidesOwnWindowsWhenCapturing = "capture.hidesOwnWindows"
         static let retentionDays = "history.retentionDays"
         static let quickAccessDuration = "quickAccess.duration"
         static let filenamePrefix = "capture.filenamePrefix"

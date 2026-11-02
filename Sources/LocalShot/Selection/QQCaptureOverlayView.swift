@@ -619,7 +619,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             width: size.width + 36,
             height: size.height + 22
         )
-        NSColor(calibratedWhite: 0.08, alpha: 0.92).setFill()
+        LocalShotTheme.overlayLabelNSColor.setFill()
         NSBezierPath(roundedRect: rect, xRadius: 8, yRadius: 8).fill()
         text.draw(at: CGPoint(x: rect.minX + 18, y: rect.minY + 11), withAttributes: attributes)
     }
@@ -651,7 +651,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             selectionRect.maxX - instructionRect.width - 8
         )
         instructionRect.origin.y = max(instructionRect.minY, selectionRect.minY + 8)
-        NSColor(calibratedWhite: 0.05, alpha: 0.86).setFill()
+        LocalShotTheme.overlayLabelNSColor.setFill()
         NSBezierPath(roundedRect: instructionRect, xRadius: 9, yRadius: 9).fill()
         text.draw(
             at: CGPoint(x: instructionRect.minX + 14, y: instructionRect.minY + 7),
@@ -660,7 +660,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
     }
 
     private func drawSelectionBorder(_ rect: CGRect, context: CGContext) {
-        let accent = NSColor(srgbRed: 0.18, green: 0.58, blue: 1, alpha: 1)
+        let accent = themeColor(LocalShotTheme.accentNSColor)
         context.setStrokeColor(accent.cgColor)
         context.setLineWidth(2)
         context.stroke(rect.insetBy(dx: 1, dy: 1))
@@ -693,7 +693,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             labelRect.origin.y = rect.maxY - labelRect.height - 7
         }
         labelRect.origin.x = min(max(labelRect.minX, 6), bounds.maxX - labelRect.width - 6)
-        NSColor(calibratedWhite: 0.08, alpha: 0.92).setFill()
+        LocalShotTheme.overlayLabelNSColor.setFill()
         NSBezierPath(roundedRect: labelRect, xRadius: 5, yRadius: 5).fill()
         text.draw(
             at: CGPoint(x: labelRect.minX + 8, y: labelRect.minY + 5),
@@ -718,7 +718,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             height: size.height + 10
         )
         rect.origin.x = min(max(rect.minX, 6), bounds.maxX - rect.width - 6)
-        NSColor(calibratedWhite: 0.08, alpha: 0.88).setFill()
+        LocalShotTheme.overlayLabelNSColor.setFill()
         NSBezierPath(roundedRect: rect, xRadius: 5, yRadius: 5).fill()
         title.draw(
             in: rect.insetBy(dx: 9, dy: 5),
@@ -797,7 +797,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
         let toolbar = toolbarRect()
         drawFloatingPanel(toolbar, context: context)
 
-        let accent = NSColor(srgbRed: 0.18, green: 0.58, blue: 1, alpha: 1)
+        let accent = themeColor(LocalShotTheme.accentNSColor)
         for button in toolbarButtons() {
             let isSelected: Bool
             if case let .tool(tool) = button.id {
@@ -812,20 +812,20 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             let isDisabled = (button.id == .undo && annotations.isEmpty)
                 || (button.id == .scrolling && !annotations.isEmpty)
                 || (button.id == .recording && !annotations.isEmpty)
+            let isCancelHovered = button.id == .cancel && isHovered
+            let isFilled = isSelected || button.id == .finish || isCancelHovered
             if isSelected || isHovered || button.id == .finish {
                 let fill: NSColor
                 let border: NSColor
                 if button.id == .finish {
-                    fill = accent.withAlphaComponent(0.78)
+                    fill = accent
                     border = NSColor.white.withAlphaComponent(0.34)
-                } else if button.id == .cancel, isHovered {
-                    fill = NSColor.systemRed.withAlphaComponent(0.66)
-                    border = NSColor.white.withAlphaComponent(0.24)
+                } else if isCancelHovered {
+                    fill = NSColor.systemRed.withAlphaComponent(0.85)
+                    border = .clear
                 } else {
-                    fill = isSelected
-                        ? accent.withAlphaComponent(0.58)
-                        : NSColor.white.withAlphaComponent(0.11)
-                    border = NSColor.white.withAlphaComponent(isSelected ? 0.28 : 0.12)
+                    fill = isSelected ? accent : accent.withAlphaComponent(0.14)
+                    border = isSelected ? NSColor.white.withAlphaComponent(0.28) : .clear
                 }
                 let buttonPath = NSBezierPath(
                     roundedRect: button.rect,
@@ -847,7 +847,8 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
                 buttonPath.lineWidth = 0.8
                 buttonPath.stroke()
             }
-            let color = NSColor.white.withAlphaComponent(isDisabled ? 0.28 : 0.94)
+            let ink = isFilled ? NSColor.white : themeColor(LocalShotTheme.overlayInkNSColor)
+            let color = ink.withAlphaComponent(isDisabled ? 0.3 : 0.94)
             drawSymbol(button.symbolName, color: color, in: button.rect.insetBy(dx: 7, dy: 7))
         }
 
@@ -879,13 +880,15 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             context.setFillColor(cgColor(color.value))
             context.fillEllipse(in: rect)
             context.setStrokeColor(
-                (index == selectedColorIndex ? NSColor.white : NSColor.white.withAlphaComponent(0.24)).cgColor
+                (index == selectedColorIndex
+                    ? themeColor(LocalShotTheme.accentNSColor)
+                    : themeColor(LocalShotTheme.overlayStrokeNSColor)).cgColor
             )
             context.setLineWidth(index == selectedColorIndex ? 2.5 : 1)
             context.strokeEllipse(in: rect.insetBy(dx: -2, dy: -2))
         }
 
-        context.setStrokeColor(NSColor.white.withAlphaComponent(0.18).cgColor)
+        context.setStrokeColor(themeColor(LocalShotTheme.overlayStrokeNSColor).cgColor)
         context.setLineWidth(1)
         context.move(to: CGPoint(x: panel.minX + 205, y: panel.minY + 8))
         context.addLine(to: CGPoint(x: panel.minX + 205, y: panel.maxY - 8))
@@ -893,7 +896,11 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
 
         for (index, width) in lineWidths.enumerated() {
             let center = CGPoint(x: panel.minX + 224 + CGFloat(index) * 20, y: panel.midY)
-            context.setFillColor(NSColor.white.withAlphaComponent(index == selectedLineWidthIndex ? 0.98 : 0.5).cgColor)
+            context.setFillColor(
+                themeColor(LocalShotTheme.overlayInkNSColor)
+                    .withAlphaComponent(index == selectedLineWidthIndex ? 0.95 : 0.4)
+                    .cgColor
+            )
             context.fillEllipse(in: CGRect(
                 x: center.x - width / 2,
                 y: center.y - width / 2,
@@ -901,7 +908,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
                 height: width
             ))
             if index == selectedLineWidthIndex {
-                context.setStrokeColor(NSColor(srgbRed: 0.18, green: 0.58, blue: 1, alpha: 1).cgColor)
+                context.setStrokeColor(themeColor(LocalShotTheme.accentNSColor).cgColor)
                 context.setLineWidth(2)
                 context.strokeEllipse(in: CGRect(x: center.x - 8, y: center.y - 8, width: 16, height: 16))
             }
@@ -909,26 +916,22 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
     }
 
     private func drawPixelatePropertyPanel(_ panel: CGRect, context: CGContext) {
-        let accent = NSColor(srgbRed: 0.18, green: 0.58, blue: 1, alpha: 1)
+        let accent = themeColor(LocalShotTheme.accentNSColor)
         let options: [(PixelateEffect, String, CGRect)] = [
             (.mosaic, "马赛克", CGRect(x: panel.minX + 8, y: panel.minY + 6, width: 72, height: 26)),
             (.blur, "模糊", CGRect(x: panel.minX + 84, y: panel.minY + 6, width: 58, height: 26))
         ]
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: NSFont.systemFont(ofSize: 11, weight: .medium),
-            .foregroundColor: NSColor.white
-        ]
+        let ink = themeColor(LocalShotTheme.overlayInkNSColor)
         for (effect, label, rect) in options {
             let isSelected = effect == selectedPixelateEffect
-            let fill = isSelected
-                ? accent.withAlphaComponent(0.58)
-                : NSColor.white.withAlphaComponent(0.08)
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: NSFont.systemFont(ofSize: 11, weight: .medium),
+                .foregroundColor: isSelected ? NSColor.white : ink
+            ]
+            let fill = isSelected ? accent : ink.withAlphaComponent(0.06)
             fill.setFill()
             let path = NSBezierPath(roundedRect: rect, xRadius: 9, yRadius: 9)
             path.fill()
-            NSColor.white.withAlphaComponent(isSelected ? 0.26 : 0.08).setStroke()
-            path.lineWidth = 0.8
-            path.stroke()
             let size = label.size(withAttributes: attributes)
             label.draw(
                 at: CGPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2),
@@ -936,7 +939,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             )
         }
 
-        context.setStrokeColor(NSColor.white.withAlphaComponent(0.18).cgColor)
+        context.setStrokeColor(themeColor(LocalShotTheme.overlayStrokeNSColor).cgColor)
         context.setLineWidth(1)
         context.move(to: CGPoint(x: panel.minX + 160, y: panel.minY + 8))
         context.addLine(to: CGPoint(x: panel.minX + 160, y: panel.maxY - 8))
@@ -944,7 +947,11 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
 
         for (index, width) in lineWidths.enumerated() {
             let center = CGPoint(x: panel.minX + 184 + CGFloat(index) * 32, y: panel.midY)
-            context.setFillColor(NSColor.white.withAlphaComponent(index == selectedLineWidthIndex ? 0.98 : 0.5).cgColor)
+            context.setFillColor(
+                themeColor(LocalShotTheme.overlayInkNSColor)
+                    .withAlphaComponent(index == selectedLineWidthIndex ? 0.95 : 0.4)
+                    .cgColor
+            )
             context.fillEllipse(in: CGRect(
                 x: center.x - width / 2,
                 y: center.y - width / 2,
@@ -968,13 +975,16 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             transform: nil
         )
 
+        let panelColor = themeColor(LocalShotTheme.overlayPanelNSColor)
+        let isDark = effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
+
         context.saveGState()
         context.setShadow(
-            offset: CGSize(width: 0, height: -6),
-            blur: 20,
-            color: NSColor.black.withAlphaComponent(0.42).cgColor
+            offset: CGSize(width: 0, height: -5),
+            blur: 18,
+            color: NSColor.black.withAlphaComponent(isDark ? 0.4 : 0.2).cgColor
         )
-        context.setFillColor(NSColor.black.withAlphaComponent(0.44).cgColor)
+        context.setFillColor(panelColor.cgColor)
         context.addPath(path)
         context.fillPath()
         context.restoreGState()
@@ -986,45 +996,19 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             context.interpolationQuality = .high
             context.draw(backdrop.image, in: backdrop.drawRect)
         }
-        if let tint = CGGradient(
-            colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
-            colors: [
-                NSColor(srgbRed: 0.14, green: 0.16, blue: 0.19, alpha: 0.58).cgColor,
-                NSColor(srgbRed: 0.06, green: 0.07, blue: 0.09, alpha: 0.68).cgColor,
-                NSColor(srgbRed: 0.02, green: 0.03, blue: 0.04, alpha: 0.76).cgColor
-            ] as CFArray,
-            locations: [0, 0.46, 1]
-        ) {
-            context.drawLinearGradient(
-                tint,
-                start: CGPoint(x: rect.midX, y: rect.maxY),
-                end: CGPoint(x: rect.midX, y: rect.minY),
-                options: []
-            )
-        }
+        context.setFillColor(panelColor.cgColor)
+        context.fill(rect)
         context.restoreGState()
 
-        context.setStrokeColor(NSColor.white.withAlphaComponent(0.28).cgColor)
+        context.setStrokeColor(themeColor(LocalShotTheme.overlayStrokeNSColor).cgColor)
         context.setLineWidth(0.8)
         context.addPath(path)
-        context.strokePath()
-
-        let innerRect = rect.insetBy(dx: 1.25, dy: 1.25)
-        let innerPath = CGPath(
-            roundedRect: innerRect,
-            cornerWidth: max(0, radius - 1.25),
-            cornerHeight: max(0, radius - 1.25),
-            transform: nil
-        )
-        context.setStrokeColor(NSColor.black.withAlphaComponent(0.28).cgColor)
-        context.setLineWidth(0.75)
-        context.addPath(innerPath)
         context.strokePath()
 
         context.saveGState()
         context.addPath(path)
         context.clip()
-        context.setStrokeColor(NSColor.white.withAlphaComponent(0.34).cgColor)
+        context.setStrokeColor(NSColor.white.withAlphaComponent(isDark ? 0.12 : 0.8).cgColor)
         context.setLineWidth(0.9)
         context.setLineCap(.round)
         context.move(to: CGPoint(x: rect.minX + radius, y: rect.maxY - 0.75))
@@ -1085,6 +1069,10 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
         return backdrop
     }
 
+    private func themeColor(_ color: NSColor) -> NSColor {
+        LocalShotTheme.resolved(color, for: effectiveAppearance)
+    }
+
     private func drawSymbol(_ name: String, color: NSColor, in rect: CGRect) {
         guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil) else {
             return
@@ -1115,7 +1103,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
             height: size.height + 8
         )
         tooltip.origin.x = min(max(tooltip.minX, 4), bounds.maxX - tooltip.width - 4)
-        NSColor(calibratedWhite: 0.04, alpha: 0.94).setFill()
+        LocalShotTheme.overlayLabelNSColor.setFill()
         NSBezierPath(roundedRect: tooltip, xRadius: 5, yRadius: 5).fill()
         text.draw(at: CGPoint(x: tooltip.minX + 7, y: tooltip.minY + 4), withAttributes: attributes)
     }
@@ -1985,7 +1973,7 @@ final class QQCaptureOverlayView: NSView, NSTextFieldDelegate {
         guard let annotation = selectedAnnotation else {
             return
         }
-        let accent = NSColor(srgbRed: 0.18, green: 0.58, blue: 1, alpha: 1)
+        let accent = themeColor(LocalShotTheme.accentNSColor)
         let outline = viewRect(from: annotation.bounds).insetBy(dx: -4, dy: -4)
         context.saveGState()
         context.clip(to: selectionRect)

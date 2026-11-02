@@ -216,6 +216,6 @@ struct AnnotationEditorView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .frame(height: 100)
-        .background(LocalShotTheme.background)
+        .background(LocalShotBackground().ignoresSafeArea(edges: .top))
     }
 }

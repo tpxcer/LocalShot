@@ -126,7 +126,7 @@ struct CaptureHistoryView: View {
             }
         }
         .frame(minWidth: 700, minHeight: 480)
-        .background(LocalShotTheme.background)
+        .background(LocalShotBackground().ignoresSafeArea())
         .tint(LocalShotTheme.accent)
     }
 

@@ -22,7 +22,7 @@ enum ScreenCaptureKitServiceError: LocalizedError {
 
 @available(macOS 14.0, *)
 final class ScreenCaptureKitService: @unchecked Sendable {
-    func availableWindows() async throws -> [WindowCaptureCandidate] {
+    func availableWindows(includesOwnWindows: Bool = false) async throws -> [WindowCaptureCandidate] {
         let content = try await SCShareableContent.excludingDesktopWindows(
             true,
             onScreenWindowsOnly: true
@@ -35,8 +35,9 @@ final class ScreenCaptureKitService: @unchecked Sendable {
                   window.frame.width >= 80,
                   window.frame.height >= 40,
                   let application = window.owningApplication,
-                  application.processID != ProcessInfo.processInfo.processIdentifier,
-                  application.bundleIdentifier != bundleIdentifier else {
+                  includesOwnWindows
+                    || (application.processID != ProcessInfo.processInfo.processIdentifier
+                        && application.bundleIdentifier != bundleIdentifier) else {
                 return nil
             }
             return WindowCaptureCandidate(
@@ -70,7 +71,8 @@ final class ScreenCaptureKitService: @unchecked Sendable {
         outputURL: URL,
         showsCursor: Bool = false,
         outputFormat: CaptureOutputFormat = .png,
-        jpegQuality: Double = 0.9
+        jpegQuality: Double = 0.9,
+        includesOwnWindows: Bool = false
     ) async throws -> URL {
         let content = try await SCShareableContent.excludingDesktopWindows(
             false,
@@ -81,7 +83,7 @@ final class ScreenCaptureKitService: @unchecked Sendable {
         }
 
         let bundleIdentifier = Bundle.main.bundleIdentifier
-        let excludedWindows = content.windows.filter {
+        let excludedWindows = includesOwnWindows ? [] : content.windows.filter {
             $0.owningApplication?.bundleIdentifier == bundleIdentifier
         }
         let filter = SCContentFilter(display: display, excludingWindows: excludedWindows)
@@ -111,7 +113,8 @@ final class ScreenCaptureKitService: @unchecked Sendable {
 
     func captureDisplayPreviews(
         scalesByDisplayID: [CGDirectDisplayID: CGFloat],
-        showsCursor: Bool = false
+        showsCursor: Bool = false,
+        includesOwnWindows: Bool = false
     ) async throws -> [CGDirectDisplayID: CGImage] {
         guard !scalesByDisplayID.isEmpty else {
             throw ScreenCaptureKitServiceError.displayPreviewUnavailable
@@ -121,7 +124,7 @@ final class ScreenCaptureKitService: @unchecked Sendable {
             onScreenWindowsOnly: true
         )
         let bundleIdentifier = Bundle.main.bundleIdentifier
-        let excludedWindows = content.windows.filter {
+        let excludedWindows = includesOwnWindows ? [] : content.windows.filter {
             $0.owningApplication?.processID == ProcessInfo.processInfo.processIdentifier
                 || $0.owningApplication?.bundleIdentifier == bundleIdentifier
         }

@@ -17,21 +17,34 @@ struct SettingsView: View {
         #endif
     }
 
+    @StateObject private var tabSelection = SettingsTabSelection()
+    @Namespace private var tabNamespace
+
     var body: some View {
-        TabView {
-            page { generalSections }
-                .tabItem { Label("通用", systemImage: "gearshape") }
-            page { captureSections }
-                .tabItem { Label("截图与录屏", systemImage: "camera.viewfinder") }
-            page { hotKeySection }
-                .tabItem { Label("快捷键", systemImage: "keyboard") }
-            page { storageSections }
-                .tabItem { Label("存储与隐私", systemImage: "externaldrive") }
-            page { aboutSection }
-                .tabItem { Label("关于", systemImage: "info.circle") }
+        VStack(spacing: 0) {
+            header
+            tabBar
+                .padding(.top, 10)
+                .padding(.bottom, 2)
+            Form {
+                switch tabSelection.tab {
+                case .general: generalSections
+                case .capture: captureSections
+                case .hotKeys: hotKeySection
+                case .storage: storageSections
+                case .about: aboutSection
+                }
+            }
+            .formStyle(.grouped)
+            .scrollContentBackground(.hidden)
         }
+        .ignoresSafeArea(edges: .top)
+        .background(LocalShotBackground().ignoresSafeArea())
+        .background(SettingsWindowConfigurator())
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .modifier(HiddenWindowTitle())
         .tint(LocalShotTheme.accent)
-        .frame(width: 620, height: 600)
+        .frame(width: 620, height: 640)
         .onAppear {
             model.refreshPermissionStates()
             model.refreshLaunchAtLoginState()
@@ -42,35 +55,50 @@ struct SettingsView: View {
         }
     }
 
-    private func page<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        VStack(spacing: 0) {
-            header
-                .padding(.horizontal, 28)
-                .padding(.top, 18)
-                .padding(.bottom, 4)
-            Form {
-                content()
-            }
-            .formStyle(.grouped)
-            .scrollContentBackground(.hidden)
-        }
-        .background(LocalShotTheme.background)
-    }
-
     private var header: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 7) {
             Image(nsImage: NSApp.applicationIconImage)
                 .resizable()
-                .frame(width: 44, height: 44)
-            VStack(alignment: .leading, spacing: 3) {
-                Text("LocalShot")
-                    .font(.title2.weight(.bold))
-                HStack(spacing: 6) {
-                    LocalShotTag(text: "截图与录屏")
-                    LocalShotTag(text: "纯本地")
+                .frame(width: 22, height: 22)
+            Text("LocalShot")
+                .font(.system(size: 15, weight: .bold))
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 28)
+    }
+
+    private var tabBar: some View {
+        HStack(spacing: 2) {
+            ForEach(SettingsTab.allCases) { tab in
+                let isSelected = tabSelection.tab == tab
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        tabSelection.tab = tab
+                    }
+                } label: {
+                    Label(tab.title, systemImage: tab.symbolName)
+                        .font(.system(size: 12.5, weight: .medium))
+                        .foregroundStyle(isSelected ? Color.white : Color.primary)
+                        .padding(.horizontal, 12)
+                        .frame(height: 28)
+                        .background {
+                            if isSelected {
+                                Capsule()
+                                    .fill(LocalShotTheme.accent)
+                                    .matchedGeometryEffect(id: "selectedTab", in: tabNamespace)
+                            }
+                        }
+                        .contentShape(Capsule())
                 }
+                .buttonStyle(.plain)
             }
-            Spacer()
+        }
+        .padding(3)
+        .background {
+            Capsule()
+                .fill(LocalShotTheme.card.opacity(0.75))
+                .overlay(Capsule().strokeBorder(LocalShotTheme.cardStroke, lineWidth: 1))
+                .shadow(color: .black.opacity(0.05), radius: 6, y: 2)
         }
     }
 
@@ -208,6 +236,11 @@ struct SettingsView: View {
             TextField("文件名前缀", text: $settings.filenamePrefix)
             Toggle("截图中包含鼠标光标", isOn: $settings.includesCursor)
             Toggle("窗口截图保留阴影", isOn: $settings.includesWindowShadow)
+            Toggle("截图时隐藏 LocalShot 自己的窗口", isOn: $settings.hidesOwnWindowsWhenCapturing)
+            Text("关闭后，区域、窗口和全屏截图会包含设置、置顶截图等 LocalShot 窗口；识别文字和录屏仍会隐藏。需要 macOS 14 或更高版本。")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
 
         if #available(macOS 15.0, *) {
@@ -407,5 +440,78 @@ struct SettingsView: View {
 
     private var privacyStatementURL: URL? {
         Bundle.main.url(forResource: "PRIVACY", withExtension: "md")
+    }
+}
+
+@MainActor
+private final class SettingsTabSelection: ObservableObject {
+    @Published var tab: SettingsTab = .general
+}
+
+private enum SettingsTab: CaseIterable, Identifiable {
+    case general
+    case capture
+    case hotKeys
+    case storage
+    case about
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .general: "通用"
+        case .capture: "截图与录屏"
+        case .hotKeys: "快捷键"
+        case .storage: "存储与隐私"
+        case .about: "关于"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .general: "gearshape"
+        case .capture: "camera.viewfinder"
+        case .hotKeys: "keyboard"
+        case .storage: "externaldrive"
+        case .about: "info.circle"
+        }
+    }
+}
+
+private struct HiddenWindowTitle: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(macOS 15.0, *) {
+            content.toolbar(removing: .title)
+        } else {
+            content
+        }
+    }
+}
+
+private struct SettingsWindowConfigurator: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView {
+        ConfiguringView()
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {}
+
+    private final class ConfiguringView: NSView {
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            guard let window else {
+                return
+            }
+            window.titlebarAppearsTransparent = true
+            window.titleVisibility = .hidden
+            window.styleMask.insert(.fullSizeContentView)
+            window.isMovableByWindowBackground = true
+        }
+
+        override func viewWillDraw() {
+            super.viewWillDraw()
+            if window?.titleVisibility != .hidden {
+                window?.titleVisibility = .hidden
+            }
+        }
     }
 }

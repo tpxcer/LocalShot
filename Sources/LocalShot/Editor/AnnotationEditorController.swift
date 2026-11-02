@@ -50,11 +50,12 @@ final class AnnotationEditorController {
             hostingController.preferredContentSize = initialSize
             let window = NSWindow(
                 contentRect: NSRect(origin: .zero, size: initialSize),
-                styleMask: [.titled, .closable, .miniaturizable, .resizable],
+                styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
                 backing: .buffered,
                 defer: false
             )
             window.title = "标注 — \(title)"
+            window.titlebarAppearsTransparent = true
             window.contentViewController = hostingController
             window.contentMinSize = NSSize(width: 760, height: 520)
             window.setContentSize(initialSize)
