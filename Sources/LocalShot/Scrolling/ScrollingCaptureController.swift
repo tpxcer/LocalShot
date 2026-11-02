@@ -114,20 +114,32 @@ final class ScrollingCaptureController {
                                 String(format: "segment-%03d.png", index)
                             )
                         }
-                        _ = try await service.capture(
-                            windowID: target.id,
-                            outputURL: capturedWindowURL,
-                            includesShadow: false,
-                            showsCursor: false,
-                            outputFormat: .png
-                        )
-                        if let captureCropRect {
-                            try self.cropCapturedWindow(
-                                at: capturedWindowURL,
-                                to: segmentURL,
-                                cropRect: captureCropRect,
-                                windowSize: target.frame.size
-                            )
+                        var failedAttempts = 0
+                        while true {
+                            do {
+                                _ = try await service.capture(
+                                    windowID: target.id,
+                                    outputURL: capturedWindowURL,
+                                    includesShadow: false,
+                                    showsCursor: false,
+                                    outputFormat: .png
+                                )
+                                if let captureCropRect {
+                                    try self.cropCapturedWindow(
+                                        at: capturedWindowURL,
+                                        to: segmentURL,
+                                        cropRect: captureCropRect,
+                                        windowSize: target.frame.size
+                                    )
+                                }
+                                break
+                            } catch ScreenCaptureKitServiceError.windowUnavailable where index > 0 && failedAttempts < 10 {
+                                // 滚动中目标窗口可能短暂不可捕获，稍等重试，避免整次长截图中止
+                                failedAttempts += 1
+                                scrollingLogger.notice("第 \(index, privacy: .public) 段暂时无法采集目标窗口，第 \(failedAttempts, privacy: .public) 次重试")
+                                progress.status = "暂时无法采集目标窗口，请保持窗口可见"
+                                try await Task.sleep(nanoseconds: 300_000_000)
+                            }
                         }
                         let elapsed = Date().timeIntervalSince(startedAt)
                         if index == 0 {
@@ -167,6 +179,7 @@ final class ScrollingCaptureController {
                     },
                     onProgress: { count, transition in
                         isWaitingForOverlap = false
+                        scrollingLogger.notice("已拼接 \(count, privacy: .public) 段")
                         progress.pageCount = count
                         if let transition {
                             if transition.topInset > 0, transition.bottomInset > 0 {

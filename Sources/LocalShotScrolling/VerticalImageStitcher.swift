@@ -158,8 +158,11 @@ public enum VerticalImageStitcher {
                 ? images[index].height
                 : images[index].height - bottomInsets[index]
             let height = endRow - startRow
-            guard height > 0,
-                  let slice = images[index].cropping(to: CGRect(
+            guard height > 0 else {
+                // 该段没有带来新内容（例如完成时多采到的近似画面），跳过即可
+                continue
+            }
+            guard let slice = images[index].cropping(to: CGRect(
                     x: 0,
                     y: startRow,
                     width: images[index].width,
@@ -412,21 +415,34 @@ private struct RowSignatureImage {
             throw VerticalImageStitcherError.bitmapCreationFailed
         }
 
-        let sampleCount = min(32, max(8, width / 12))
+        // 每个采样值取所在横向区段的平均颜色：宽页面两侧大片留白时，细小文字也能反映到签名里
+        let sampleCount = min(128, max(8, width / 24))
         var rows: [[UInt8]] = []
         rows.reserveCapacity(height)
         for y in 0..<height {
             var signature: [UInt8] = []
-            signature.reserveCapacity(sampleCount)
+            signature.reserveCapacity(sampleCount * 3)
+            let rowOffset = y * bytesPerRow
             for sample in 0..<sampleCount {
-                let x = min(width - 1, (sample * width + width / 2) / sampleCount)
-                let offset = y * bytesPerRow + x * 4
-                let red = Double(pixels[offset])
-                let green = Double(pixels[offset + 1])
-                let blue = Double(pixels[offset + 2])
-                signature.append(UInt8(red))
-                signature.append(UInt8(green))
-                signature.append(UInt8(blue))
+                let startX = sample * width / sampleCount
+                let endX = max(startX + 1, (sample + 1) * width / sampleCount)
+                let step = max(1, (endX - startX) / 32)
+                var red = 0
+                var green = 0
+                var blue = 0
+                var count = 0
+                var x = startX
+                while x < endX {
+                    let offset = rowOffset + x * 4
+                    red += Int(pixels[offset])
+                    green += Int(pixels[offset + 1])
+                    blue += Int(pixels[offset + 2])
+                    count += 1
+                    x += step
+                }
+                signature.append(UInt8(red / count))
+                signature.append(UInt8(green / count))
+                signature.append(UInt8(blue / count))
             }
             rows.append(signature)
         }
@@ -456,7 +472,7 @@ private struct RowSignatureImage {
             }
             row += rowStep
         }
-        return differences.trimmedMean(keepingFraction: 0.85)
+        return differences.trimmedMean(keepingFraction: 0.98)
     }
 
     func rowDifference(
