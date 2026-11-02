@@ -50,6 +50,11 @@ plutil -lint "$RESOURCES_DIR/PrivacyInfo.xcprivacy"
 test "$(plutil -extract CFBundleIdentifier raw "$CONTENTS_DIR/Info.plist")" = "com.localshot.prototype"
 test "$(plutil -extract CFBundleIconFile raw "$CONTENTS_DIR/Info.plist")" = "LocalShot.icns"
 test "$(plutil -extract LSUIElement raw "$CONTENTS_DIR/Info.plist")" = "true"
+test "$(plutil -extract CFBundleName raw "$CONTENTS_DIR/Info.plist")" = "Framo"
+for localization in en zh-Hans
+do
+    cmp "Support/$localization.lproj/InfoPlist.strings" "$RESOURCES_DIR/$localization.lproj/InfoPlist.strings"
+done
 test -n "$(plutil -extract NSScreenCaptureUsageDescription raw "$CONTENTS_DIR/Info.plist")"
 test -n "$(plutil -extract NSMicrophoneUsageDescription raw "$CONTENTS_DIR/Info.plist")"
 test "$(plutil -extract NSPrivacyTracking raw "$RESOURCES_DIR/PrivacyInfo.xcprivacy")" = "false"

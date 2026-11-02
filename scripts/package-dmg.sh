@@ -61,7 +61,7 @@ else
     fi
     diskutil image create from \
         --format UDZO \
-        --volumeName "LocalShot $VERSION" \
+        --volumeName "Framo $VERSION" \
         "$ROOT_DIR/build" \
         "$DMG_PATH"
 fi

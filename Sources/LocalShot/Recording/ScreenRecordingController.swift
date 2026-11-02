@@ -572,7 +572,7 @@ final class ScreenRecordingController: ObservableObject {
         }
         if availableBytes <= storageWarningThreshold, !hasShownStorageWarning {
             hasShownStorageWarning = true
-            onMessage?("磁盘可用空间为 \(Self.byteText(availableBytes))。LocalShot 会在低于 \(Self.byteText(storageHardStopThreshold)) 时自动停止并保存。")
+            onMessage?("磁盘可用空间为 \(Self.byteText(availableBytes))。Framo 会在低于 \(Self.byteText(storageHardStopThreshold)) 时自动停止并保存。")
         }
         return true
     }
@@ -980,7 +980,7 @@ final class ScreenRecordingController: ObservableObject {
                 .idleSystemSleepDisabled,
                 .suddenTerminationDisabled
             ],
-            reason: "LocalShot 正在录制屏幕"
+            reason: "Framo 正在录制屏幕"
         )
     }
 

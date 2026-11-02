@@ -254,7 +254,7 @@ private enum GlobalHotKeyManagerError: LocalizedError {
         case .screenRecordingStopRegistrationFailed:
             "无法注册录制停止快捷键 ⌘⇧R，它可能已被系统或其他应用占用。"
         case .rollbackFailed:
-            "快捷键更新失败，而且无法恢复上一组快捷键。请重新启动 LocalShot。"
+            "快捷键更新失败，而且无法恢复上一组快捷键。请重新启动 Framo。"
         }
     }
 }

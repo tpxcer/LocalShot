@@ -43,6 +43,8 @@ public enum ScrollingCaptureSession {
         },
         onAcceptedSegment: (URL, ScrollTransitionAnalysis?) -> Void = { _, _ in },
         onProgress: (Int, ScrollTransitionAnalysis?) -> Void = { _, _ in },
+        onUnsupportedTransition: () -> Void = {},
+        maximumConsecutiveUnsupportedTransitions: Int = 12,
         shouldFinishWhenUnchanged: () -> Bool = { true }
     ) async throws -> ScrollingCaptureSessionResult {
         try Task.checkCancellation()
@@ -54,6 +56,7 @@ public enum ScrollingCaptureSession {
         onProgress(1, nil)
 
         var index = 1
+        var consecutiveUnsupportedTransitions = 0
         while index < segmentLimit {
             try Task.checkCancellation()
             try await advance(index)
@@ -61,7 +64,11 @@ public enum ScrollingCaptureSession {
 
             let nextURL = try await captureSegment(index)
             let transition = try analyzeTransition(segmentURLs[segmentURLs.count - 1], nextURL)
-            switch ScrollingCapturePolicy.transitionDecision(for: transition) {
+            let decision = ScrollingCapturePolicy.transitionDecision(for: transition)
+            if decision != .unsupportedTransition {
+                consecutiveUnsupportedTransitions = 0
+            }
+            switch decision {
             case .reachedEnd:
                 removeSegment(nextURL)
                 if shouldFinishWhenUnchanged() {
@@ -81,7 +88,12 @@ public enum ScrollingCaptureSession {
                 }
             case .unsupportedTransition:
                 removeSegment(nextURL)
-                throw ScrollingCaptureSessionError.unsupportedTransition
+                consecutiveUnsupportedTransitions += 1
+                guard consecutiveUnsupportedTransitions <= maximumConsecutiveUnsupportedTransitions else {
+                    throw ScrollingCaptureSessionError.unsupportedTransition
+                }
+                onUnsupportedTransition()
+                continue
             case .appendSegment:
                 segmentURLs.append(nextURL)
                 onAcceptedSegment(nextURL, transition)

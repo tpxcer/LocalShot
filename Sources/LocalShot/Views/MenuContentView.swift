@@ -136,7 +136,7 @@ struct MenuContentView: View {
             NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
         }
 
-        Button("退出 LocalShot", systemImage: "power") {
+        Button("退出 Framo", systemImage: "power") {
             NSApp.terminate(nil)
         }
     }

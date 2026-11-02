@@ -139,7 +139,7 @@ final class UpdateController: ObservableObject {
             return
         }
         guard let currentVersion else {
-            state = .failed("无法读取当前 LocalShot 版本。")
+            state = .failed("无法读取当前 Framo 版本。")
             return
         }
         state = .checking

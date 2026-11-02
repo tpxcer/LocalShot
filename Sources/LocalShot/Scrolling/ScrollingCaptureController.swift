@@ -3,20 +3,20 @@ import CoreGraphics
 import ImageIO
 import LocalShotCore
 import LocalShotScrolling
+import os
 
 enum ScrollingCaptureError: LocalizedError {
     case targetApplicationUnavailable
-    case targetActivationFailed
 
     var errorDescription: String? {
         switch self {
         case .targetApplicationUnavailable:
             "目标应用已经退出。"
-        case .targetActivationFailed:
-            "无法激活目标应用。"
         }
     }
 }
+
+private let scrollingLogger = Logger(subsystem: "com.localshot.prototype", category: "scrolling")
 
 @MainActor
 final class ScrollingCaptureController {
@@ -44,6 +44,7 @@ final class ScrollingCaptureController {
             selectionBorderController.show(selectionRect: selectionRect)
         }
         var finishRequested = false
+        var isWaitingForOverlap = false
         let progress = progressController.show(
             onFinish: {
                 finishRequested = true
@@ -72,9 +73,10 @@ final class ScrollingCaptureController {
                 ) else {
                     throw ScrollingCaptureError.targetApplicationUnavailable
                 }
-                guard targetApplication.activate(options: [.activateAllWindows, .activateIgnoringOtherApps]) else {
-                    throw ScrollingCaptureError.targetActivationFailed
-                }
+                let activated = targetApplication.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
+                scrollingLogger.notice(
+                    "开始长截图：应用 \(targetApplication.bundleIdentifier ?? "-", privacy: .public)，窗口 \(target.id, privacy: .public)，激活 \(activated, privacy: .public)"
+                )
 
                 try FileManager.default.createDirectory(
                     at: temporaryDirectory,
@@ -88,6 +90,15 @@ final class ScrollingCaptureController {
                     requestedSegmentLimit: maximumSegments,
                     outputURL: outputURL,
                     captureSegment: { index in
+                        let startedAt = Date()
+                        let slowCaptureNotice = index == 0 ? Task { @MainActor in
+                            try? await Task.sleep(nanoseconds: 5_000_000_000)
+                            if !Task.isCancelled {
+                                progress.status = "仍在等待目标窗口画面。如果系统弹出屏幕录制授权提示，请先允许"
+                                scrollingLogger.error("第一段画面超过 5 秒仍未采集完成")
+                            }
+                        } : nil
+                        defer { slowCaptureNotice?.cancel() }
                         let segmentURL: URL
                         let capturedWindowURL: URL
                         if captureCropRect == nil {
@@ -118,15 +129,23 @@ final class ScrollingCaptureController {
                                 windowSize: target.frame.size
                             )
                         }
+                        let elapsed = Date().timeIntervalSince(startedAt)
+                        if index == 0 {
+                            scrollingLogger.notice("第一段画面采集完成，用时 \(elapsed, privacy: .public) 秒")
+                        } else {
+                            scrollingLogger.debug("采集第 \(index, privacy: .public) 段，用时 \(elapsed, privacy: .public) 秒")
+                        }
                         return segmentURL
                     },
                     advance: { _ in
-                        if targetApplication.isActive {
+                        if isWaitingForOverlap {
+                            // 保留“请往回滚动”的提示，直到重新接上画面
+                        } else if targetApplication.isActive {
                             progress.status = "请继续慢慢向下滚动，完成后点击“完成”"
                         } else {
                             progress.status = "请回到目标窗口后继续滚动"
                         }
-                        try await Task.sleep(nanoseconds: 320_000_000)
+                        try await Task.sleep(nanoseconds: 200_000_000)
                     },
                     stitch: { segmentURLs, outputURL in
                         progress.status = "正在拼接 \(segmentURLs.count) 段画面…"
@@ -147,6 +166,7 @@ final class ScrollingCaptureController {
                         }
                     },
                     onProgress: { count, transition in
+                        isWaitingForOverlap = false
                         progress.pageCount = count
                         if let transition {
                             if transition.topInset > 0, transition.bottomInset > 0 {
@@ -162,6 +182,11 @@ final class ScrollingCaptureController {
                             progress.status = "请用鼠标或触控板慢慢向下滚动"
                         }
                     },
+                    onUnsupportedTransition: {
+                        isWaitingForOverlap = true
+                        progress.status = "画面变化太大，请稍微往回滚动一点，再慢慢向下"
+                        scrollingLogger.notice("相邻画面无法匹配，已跳过该帧")
+                    },
                     shouldFinishWhenUnchanged: {
                         if finishRequested {
                             progress.status = "正在完成拼接…"
@@ -175,6 +200,7 @@ final class ScrollingCaptureController {
                 onCancel()
             } catch {
                 try? FileManager.default.removeItem(at: outputURL)
+                scrollingLogger.error("长截图失败：\(error.localizedDescription, privacy: .public)")
                 onError(error.localizedDescription)
             }
         }

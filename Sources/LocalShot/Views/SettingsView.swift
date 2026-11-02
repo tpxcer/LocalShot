@@ -57,15 +57,18 @@ struct SettingsView: View {
 
     private var header: some View {
         HStack(spacing: 7) {
-            Image(nsImage: NSApp.applicationIconImage)
+            Image(nsImage: Self.bundledAppIcon)
                 .resizable()
                 .frame(width: 22, height: 22)
-            Text("LocalShot")
+            Text("Framo")
                 .font(.system(size: 15, weight: .bold))
         }
         .frame(maxWidth: .infinity)
         .frame(height: 28)
     }
+
+    private static let bundledAppIcon: NSImage = Bundle.main.url(forResource: "LocalShot", withExtension: "icns")
+        .flatMap { NSImage(contentsOf: $0) } ?? NSApp.applicationIconImage
 
     private var tabBar: some View {
         HStack(spacing: 2) {
@@ -138,7 +141,7 @@ struct SettingsView: View {
                     model.openMicrophoneSettings()
                 }
 
-                Text("只有你在区域录屏控制条中主动开启麦克风时，LocalShot 才会请求并录制麦克风声音。")
+                Text("只有你在区域录屏控制条中主动开启麦克风时，Framo 才会请求并录制麦克风声音。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -146,7 +149,7 @@ struct SettingsView: View {
 
         Section("通用") {
             Toggle(
-                "登录时自动启动 LocalShot",
+                "登录时自动启动 Framo",
                 isOn: Binding(
                     get: { model.launchAtLoginState.isRequested },
                     set: { model.setLaunchAtLoginEnabled($0) }
@@ -163,14 +166,14 @@ struct SettingsView: View {
             }
 
             if model.launchAtLoginState == .requiresApproval {
-                Text("macOS 需要你在“系统设置 → 通用 → 登录项与扩展”中允许 LocalShot。")
+                Text("macOS 需要你在“系统设置 → 通用 → 登录项与扩展”中允许 Framo。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Button("打开登录项设置") {
                     model.openLoginItemsSettings()
                 }
             } else if model.launchAtLoginState == .unavailable {
-                Text("系统当前无法注册此应用。请确认 LocalShot.app 位于“应用程序”文件夹；正式发布包还需要有效的 Developer ID 签名。")
+                Text("系统当前无法注册此应用。请确认 Framo 位于“应用程序”文件夹；正式发布包还需要有效的 Developer ID 签名。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -236,8 +239,8 @@ struct SettingsView: View {
             TextField("文件名前缀", text: $settings.filenamePrefix)
             Toggle("截图中包含鼠标光标", isOn: $settings.includesCursor)
             Toggle("窗口截图保留阴影", isOn: $settings.includesWindowShadow)
-            Toggle("截图时隐藏 LocalShot 自己的窗口", isOn: $settings.hidesOwnWindowsWhenCapturing)
-            Text("关闭后，区域、窗口和全屏截图会包含设置、置顶截图等 LocalShot 窗口；识别文字和录屏仍会隐藏。需要 macOS 14 或更高版本。")
+            Toggle("截图时隐藏 Framo 自己的窗口", isOn: $settings.hidesOwnWindowsWhenCapturing)
+            Text("关闭后，区域、窗口和全屏截图会包含设置、置顶截图等 Framo 窗口；识别文字和录屏仍会隐藏。需要 macOS 14 或更高版本。")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -266,7 +269,7 @@ struct SettingsView: View {
 
     private var hotKeySection: some View {
         Section("快捷键") {
-            Text("默认区域截图使用 ⌘⌃A，识别文字使用全局 ⌘⇧O；LocalShot 运行时，⌘⇧O 会优先触发文字框选。如果默认区域快捷键被占用，会自动改用 ⌃⌥1。")
+            Text("默认区域截图使用 ⌘⌃A，识别文字使用全局 ⌘⇧O；Framo 运行时，⌘⇧O 会优先触发文字框选。如果默认区域快捷键被占用，会自动改用 ⌃⌥1。")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -334,7 +337,7 @@ struct SettingsView: View {
                 Text("永久保留").tag(0)
             }
 
-            Text("LocalShot 只管理自己生成的时间戳截图和录屏，不会把目录中的其他图片或视频加入记录或自动删除。")
+            Text("Framo 只管理自己生成的时间戳截图和录屏，不会把目录中的其他图片或视频加入记录或自动删除。")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 

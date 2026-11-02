@@ -58,6 +58,11 @@ cp "$ICON" "$RESOURCES_DIR/LocalShot.icns"
 cp "$PRIVACY_MANIFEST" "$RESOURCES_DIR/PrivacyInfo.xcprivacy"
 cp "$PRIVACY_STATEMENT" "$RESOURCES_DIR/PRIVACY.md"
 cp "$LICENSE_FILE" "$RESOURCES_DIR/LICENSE"
+for localization in en zh-Hans
+do
+    mkdir -p "$RESOURCES_DIR/$localization.lproj"
+    cp "$ROOT_DIR/Support/$localization.lproj/InfoPlist.strings" "$RESOURCES_DIR/$localization.lproj/InfoPlist.strings"
+done
 codesign --force --sign - "$APP_DIR"
 codesign --verify --deep --strict "$APP_DIR"
 

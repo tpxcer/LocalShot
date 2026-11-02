@@ -254,8 +254,8 @@ private struct PinnedScreenshotView: View {
                 .disabled(model.isClickThrough)
                 .help(
                     model.isClickThrough
-                        ? "点击穿透已开启；可从 LocalShot 设置或菜单栏恢复"
-                        : "开启点击穿透；可从 LocalShot 设置或菜单栏恢复"
+                        ? "点击穿透已开启；可从 Framo 设置或菜单栏恢复"
+                        : "开启点击穿透；可从 Framo 设置或菜单栏恢复"
                 )
                 .accessibilityLabel(model.isClickThrough ? "点击穿透已开启" : "开启点击穿透")
 

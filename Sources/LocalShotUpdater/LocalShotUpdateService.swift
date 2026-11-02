@@ -92,7 +92,7 @@ public enum LocalShotUpdateError: LocalizedError, Equatable {
         case .invalidResponse:
             "GitHub 返回了无效的更新响应，请稍后重试。"
         case .noCompatibleRelease:
-            "没有找到适用于此 Mac 的 LocalShot 安装包。"
+            "没有找到适用于此 Mac 的 Framo 安装包。"
         case .downloadFailed:
             "新版安装包下载失败，请检查网络后重试。"
         case .checksumMismatch:

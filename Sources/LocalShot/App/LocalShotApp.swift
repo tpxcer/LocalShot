@@ -9,7 +9,7 @@ struct LocalShotApp: App {
             MenuContentView(model: appDelegate.model)
         } label: {
             Image(nsImage: StatusBarIcon.image)
-                .accessibilityLabel("LocalShot")
+                .accessibilityLabel("Framo")
         }
         .menuBarExtraStyle(.menu)
 

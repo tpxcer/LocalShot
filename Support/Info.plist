@@ -15,7 +15,9 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>LocalShot</string>
+    <string>Framo</string>
+    <key>LSHasLocalizedDisplayName</key>
+    <true/>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -29,8 +31,8 @@
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>仅当你在区域录屏控制条中开启麦克风时，LocalShot 才会录制麦克风声音。</string>
+    <string>仅当你在区域录屏控制条中开启麦克风时，Framo 才会录制麦克风声音。</string>
     <key>NSScreenCaptureUsageDescription</key>
-    <string>LocalShot 需要屏幕捕获权限来创建你主动请求的截图和区域屏幕录制。</string>
+    <string>Framo 需要屏幕捕获权限来创建你主动请求的截图和区域屏幕录制。</string>
 </dict>
 </plist>

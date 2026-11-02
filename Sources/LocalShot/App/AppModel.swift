@@ -150,7 +150,7 @@ final class AppModel: ObservableObject {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.alertStyle = .informational
-        alert.messageText = "发现 LocalShot 新版本 \(release.version.displayName)"
+        alert.messageText = "发现 Framo 新版本 \(release.version.displayName)"
         alert.informativeText = "是否下载并打开新版安装包？下载完成并校验通过后，请把新版拖入“应用程序”覆盖旧版。"
         alert.addButton(withTitle: "下载更新")
         alert.addButton(withTitle: "稍后")
@@ -1542,7 +1542,7 @@ final class AppModel: ObservableObject {
                 let alert = NSAlert()
                 alert.alertStyle = .warning
                 alert.messageText = "立即删除 \(expiredCount) 张旧截图？"
-                alert.informativeText = "改为 \(days) 天后自动清理，会立即永久删除超过 \(days) 天的 \(expiredCount) 张 LocalShot 截图及对应标注项目，无法撤销。之后每次启动 LocalShot 也会按此期限清理。"
+                alert.informativeText = "改为 \(days) 天后自动清理，会立即永久删除超过 \(days) 天的 \(expiredCount) 张 Framo 截图及对应标注项目，无法撤销。之后每次启动 Framo 也会按此期限清理。"
                 alert.addButton(withTitle: "删除并应用")
                 alert.addButton(withTitle: "取消")
                 guard alert.runModal() == .alertFirstButtonReturn else {
@@ -1574,7 +1574,7 @@ final class AppModel: ObservableObject {
         let alert = NSAlert()
         alert.alertStyle = .warning
         alert.messageText = "清空保存记录？"
-        alert.informativeText = "不勾选时只清空 LocalShot 内的截图和录屏记录，原文件继续保留。勾选后会永久删除当前目录中的全部 LocalShot 截图、对应标注项目和录屏文件，无法撤销。"
+        alert.informativeText = "不勾选时只清空 Framo 内的截图和录屏记录，原文件继续保留。勾选后会永久删除当前目录中的全部 Framo 截图、对应标注项目和录屏文件，无法撤销。"
         let deleteFilesCheckbox = NSButton(
             checkboxWithTitle: "同时删除截图和录屏文件",
             target: nil,

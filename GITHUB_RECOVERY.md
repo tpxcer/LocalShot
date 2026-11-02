@@ -1,6 +1,6 @@
-# LocalShot 源码恢复
+# Framo 源码恢复
 
-LocalShot 从 0.4.0（Build 20）开始公开源码并取消激活验证。
+Framo 从 0.4.0（Build 20）开始公开源码并取消激活验证。
 
 ## 新电脑恢复开发
 
@@ -18,7 +18,7 @@ sh scripts/package-app.sh
 
 ## 恢复安装包
 
-在 [LocalShot Releases](https://github.com/tpxcer/LocalShot/releases) 下载当前安装包。对应版本源码可从本仓库相同版本标签下载，安装方法见 [INSTALL.md](INSTALL.md)。
+在 [Framo Releases](https://github.com/tpxcer/LocalShot/releases) 下载当前安装包。对应版本源码可从本仓库相同版本标签下载，安装方法见 [INSTALL.md](INSTALL.md)。
 
 0.4.0（Build 20）及以前版本使用旧更新源，需手动下载安装一次 0.4.1（Build 21）或更新版本。之后会从本仓库检查和下载更新。
 

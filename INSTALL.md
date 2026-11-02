@@ -1,4 +1,4 @@
-# LocalShot 安装说明
+# Framo 安装说明
 
 ## 系统要求
 
@@ -7,15 +7,15 @@
 
 ## 下载与安装
 
-1. 从 [LocalShot Releases](https://github.com/tpxcer/LocalShot/releases/latest) 下载 `LocalShot-2026.11.2-build23-open-source-universal2-arm64-x86_64.dmg`。
-2. 双击打开 DMG，将 `LocalShot.app` 拖入“应用程序”文件夹。
-3. 在“应用程序”中打开 LocalShot。全部功能直接可用，无需机器码或授权码。
+1. 从 [Framo Releases](https://github.com/tpxcer/LocalShot/releases/latest) 下载 `LocalShot-2026.11.2-build23-open-source-universal2-arm64-x86_64.dmg`。
+2. 双击打开 DMG，将 `LocalShot.app`（访达中显示为 Framo）拖入“应用程序”文件夹，覆盖旧版即可。
+3. 在“应用程序”中打开 Framo。全部功能直接可用，无需机器码或授权码。
 
 当前公开测试版使用 ad-hoc 签名，尚未经过 Apple Developer ID 公证。若 macOS 阻止打开，请在“系统设置 → 隐私与安全性”按系统提示选择“仍要打开”。请只从本仓库 Release 下载。
 
 ## 系统权限
 
-第一次截图或录屏需要屏幕捕获权限，请按软件提示前往系统设置允许 LocalShot，然后重新打开软件。签名身份变化时，系统可能要求重新允许。
+第一次截图或录屏需要屏幕捕获权限，请按软件提示前往系统设置允许 Framo，然后重新打开软件。签名身份变化时，系统可能要求重新允许。
 
 麦克风默认关闭，只有主动开启录屏麦克风时才请求权限。当前手动滚动长截图不需要辅助功能权限。
 

@@ -67,7 +67,7 @@ final class AppSettings: ObservableObject {
         quickAccessDuration = defaults.object(forKey: Keys.quickAccessDuration) == nil
             ? 15
             : defaults.double(forKey: Keys.quickAccessDuration)
-        filenamePrefix = defaults.string(forKey: Keys.filenamePrefix) ?? "LocalShot"
+        filenamePrefix = defaults.string(forKey: Keys.filenamePrefix) ?? "Framo"
         automaticallyChecksForUpdates = defaults.object(forKey: Keys.automaticallyChecksForUpdates) == nil
             ? true
             : defaults.bool(forKey: Keys.automaticallyChecksForUpdates)
