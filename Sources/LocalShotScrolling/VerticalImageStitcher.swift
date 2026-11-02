@@ -341,40 +341,53 @@ public enum VerticalImageStitcher {
         minimumOverlap: Int,
         maximumDifference: Double
     ) -> OverlapMatch? {
+        // 搜索到只差 1 行的位置：慢速滚动时两帧可能只挪动几十像素
         let availableNextHeight = nextEndRow - nextStartRow
-        let maximumOverlap = min(previousEndRow, availableNextHeight) * 19 / 20
+        let maximumOverlap = min(previousEndRow, availableNextHeight) - 1
         guard maximumOverlap >= minimumOverlap else {
             return nil
         }
 
+        // 逐行判断是否真正对上，而不是看整体平均差异：深色或留白多的界面里，
+        // 错误位置的平均差异也可能很低。选“对不上的行”最少的位置，近似并列时取更大重叠。
+        let tiedFraction = 0.02
+        let acceptableFraction = 0.1
         var bestOverlap: Int?
-        var bestDifference = Double.greatestFiniteMagnitude
-        for overlap in minimumOverlap...maximumOverlap {
-            let rowStep = max(1, overlap / 64)
-            var differences = DifferenceAccumulator()
+        var bestFraction = Double.greatestFiniteMagnitude
+        for overlap in stride(from: maximumOverlap, through: minimumOverlap, by: -1) {
+            let rowStep = max(1, overlap / 128)
+            let sampledRows = (overlap + rowStep - 1) / rowStep
+            let allowedMismatches = Int(
+                Double(sampledRows) * min(acceptableFraction, bestFraction <= tiedFraction ? tiedFraction : bestFraction)
+            )
+            var mismatchedRows = 0
             var row = 0
-            while row < overlap {
-                let previousRow = previous.rows[previousEndRow - overlap + row]
-                let nextRow = next.rows[nextStartRow + row]
-                for column in previousRow.indices {
-                    differences.add(previousRow[column], nextRow[column])
+            while row < overlap, mismatchedRows <= allowedMismatches {
+                if !previous.rowMatches(previousEndRow - overlap + row, next, nextStartRow + row) {
+                    mismatchedRows += 1
                 }
                 row += rowStep
             }
-            let difference = differences.trimmedMean(keepingFraction: 0.95)
-            if difference < bestDifference - 0.01
-                || (abs(difference - bestDifference) <= 0.01 && overlap > (bestOverlap ?? 0)) {
-                bestDifference = difference
+            guard mismatchedRows <= allowedMismatches else {
+                continue
+            }
+            let fraction = Double(mismatchedRows) / Double(sampledRows)
+            if bestOverlap == nil || (fraction > tiedFraction && fraction < bestFraction) {
                 bestOverlap = overlap
+                bestFraction = fraction
+            } else if fraction <= tiedFraction, bestFraction > tiedFraction {
+                bestOverlap = overlap
+                bestFraction = fraction
+            }
+            if bestFraction <= tiedFraction {
+                // 从大到小搜索，第一个近乎完全对上的位置就是最大重叠
+                break
             }
         }
-        guard bestDifference <= maximumDifference else {
+        guard let bestOverlap, bestFraction <= acceptableFraction else {
             return nil
         }
-        guard let bestOverlap else {
-            return nil
-        }
-        return OverlapMatch(overlap: bestOverlap, difference: bestDifference)
+        return OverlapMatch(overlap: bestOverlap, difference: bestFraction * 100)
     }
 
     private static func loadImage(at url: URL) throws -> CGImage {
@@ -473,6 +486,21 @@ private struct RowSignatureImage {
             row += rowStep
         }
         return differences.trimmedMean(keepingFraction: 0.98)
+    }
+
+    /// 两行是否基本一致：明显不同的采样值不超过 1%
+    func rowMatches(_ row: Int, _ other: RowSignatureImage, _ otherRow: Int) -> Bool {
+        let first = rows[row]
+        let second = other.rows[otherRow]
+        let allowed = max(1, first.count / 100)
+        var different = 0
+        for index in first.indices where abs(Int(first[index]) - Int(second[index])) > 10 {
+            different += 1
+            if different > allowed {
+                return false
+            }
+        }
+        return true
     }
 
     func rowDifference(
