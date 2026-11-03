@@ -64,6 +64,8 @@ do
     cp "$ROOT_DIR/Support/$localization.lproj/InfoPlist.strings" "$RESOURCES_DIR/$localization.lproj/InfoPlist.strings"
 done
 codesign --force --sign - "$APP_DIR"
+# 更新应用包本身的修改时间，覆盖安装后访达和程序坞才会刷新图标缓存
+touch "$APP_DIR"
 codesign --verify --deep --strict "$APP_DIR"
 
 echo "$APP_DIR"

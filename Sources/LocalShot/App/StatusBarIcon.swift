@@ -14,13 +14,14 @@ enum StatusBarIcon {
             NSColor.black.setStroke()
             NSColor.black.setFill()
 
+            // 与应用图标一致：取景框四角 + 中心快门圆点
             let brackets = NSBezierPath()
-            brackets.lineWidth = 1.7
+            brackets.lineWidth = 2
             brackets.lineCapStyle = .round
             brackets.lineJoinStyle = .round
             let minimum: CGFloat = 2.7
             let maximum: CGFloat = 19.3
-            let length: CGFloat = 4.6
+            let length: CGFloat = 4.8
             let corners: [(NSPoint, CGFloat, CGFloat)] = [
                 (NSPoint(x: minimum, y: maximum), 1, -1),
                 (NSPoint(x: maximum, y: maximum), -1, -1),
@@ -34,33 +35,7 @@ enum StatusBarIcon {
             }
             brackets.stroke()
 
-            let handles = NSBezierPath()
-            handles.lineWidth = 1.55
-            handles.appendOval(in: NSRect(x: 5.1, y: 4.7, width: 4.8, height: 4.8))
-            handles.appendOval(in: NSRect(x: 5.1, y: 12.5, width: 4.8, height: 4.8))
-            handles.stroke()
-
-            let blades = NSBezierPath()
-            blades.lineWidth = 1.65
-            blades.lineCapStyle = .round
-            blades.lineJoinStyle = .round
-            blades.move(to: NSPoint(x: 8.8, y: 8.6))
-            blades.curve(
-                to: NSPoint(x: 11.2, y: 11),
-                controlPoint1: NSPoint(x: 9.7, y: 9.2),
-                controlPoint2: NSPoint(x: 10.5, y: 10.2)
-            )
-            blades.line(to: NSPoint(x: 17.2, y: 16.9))
-            blades.move(to: NSPoint(x: 8.8, y: 13.4))
-            blades.curve(
-                to: NSPoint(x: 11.2, y: 11),
-                controlPoint1: NSPoint(x: 9.7, y: 12.8),
-                controlPoint2: NSPoint(x: 10.5, y: 11.8)
-            )
-            blades.line(to: NSPoint(x: 17.2, y: 5.1))
-            blades.stroke()
-
-            NSBezierPath(ovalIn: NSRect(x: 10.25, y: 10.05, width: 1.9, height: 1.9)).fill()
+            NSBezierPath(ovalIn: NSRect(x: 8.2, y: 8.2, width: 5.6, height: 5.6)).fill()
             context.restoreGState()
             return true
         }
