@@ -46,7 +46,7 @@ Framo 不会绕过系统权限，也不会在用户未操作时自行开启权�
 
 ## 网络与第三方
 
-Framo 不运营云服务。直接分发版本的更新模块会访问 `api.github.com` 查询 `tpxcer/LocalShot` 的公开 Release：
+Framo 不运营云服务。直接分发版本的更新模块会访问 `api.github.com` 查询 `tpxcer/Framo` 的公开 Release：
 
 - 自动检查默认开启，每 24 小时最多一次，可在设置中关闭；手动检查只在用户点击时发生。
 - 请求不包含截图、录屏、OCR 文字、历史、文件路径或使用记录。
@@ -60,4 +60,4 @@ macOS 可能为系统翻译语言资源、系统更新或其他操作系统功�
 
 如果未来增加更新检查之外的联网、账号或第三方服务功能，必须先更新本说明，并在功能启用前向用户清楚说明用途和数据范围。
 
-如有隐私问题，请通过 [GitHub Issue](https://github.com/tpxcer/LocalShot/issues) 联系维护者。
+如有隐私问题，请通过 [GitHub Issue](https://github.com/tpxcer/Framo/issues) 联系维护者。

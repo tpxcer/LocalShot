@@ -2,13 +2,13 @@
 
 Framo 是一款开源、纯本地的 macOS 截图与录屏工具，支持 Apple 芯片和 Intel Mac。
 
-Framo 原名 LocalShot。为保证升级后设置、截图数据、开机启动和软件内更新不受影响，应用文件仍为 `LocalShot.app`（在访达、启动台中显示为 Framo），数据目录、源码仓库地址和安装包文件名前缀保持不变。
+Framo 原名 LocalShot。为保证升级后设置、截图数据、开机启动和软件内更新不受影响，应用文件仍为 `LocalShot.app`（在访达、启动台中显示为 Framo），数据目录和安装包文件名前缀保持不变。源码仓库已从 `tpxcer/LocalShot` 改名为 `tpxcer/Framo`，旧链接会自动跳转。
 
 从 **0.4.0（Build 20）** 开始，所有功能安装后直接可用，无需机器码、授权码或激活。源码采用 **GNU GPL v3（GPL-3.0-only）**，允许使用、修改和再分发；分发修改版时须遵守 GPL v3 的源码公开和许可证要求。
 
-[下载安装包](https://github.com/tpxcer/LocalShot/releases/latest) · [安装说明](INSTALL.md) · [功能展示](#软件截图) · [反馈问题](https://github.com/tpxcer/LocalShot/issues)
+[下载安装包](https://github.com/tpxcer/Framo/releases/latest) · [安装说明](INSTALL.md) · [功能展示](#软件截图) · [反馈问题](https://github.com/tpxcer/Framo/issues)
 
-当前版本：**2026.11.3（Build 27）**。从这一版起，版本号按发布日期命名（年.月.日），同一天再次发布时只递增构建号。源码、安装包、功能展示和后续更新统一在本仓库维护。
+当前版本：**2026.11.4（Build 28）**。从这一版起，版本号按发布日期命名（年.月.日），同一天再次发布时只递增构建号。源码、安装包、功能展示和后续更新统一在本仓库维护。
 
 > 0.4.0（Build 20）及以前版本使用旧更新源，需要手动下载安装一次 Build 21 或更新版本，之后才能继续在软件内检查更新。升级前请备份重要截图，或将旧版“自动清理”改为“永久保留”；如果旧版设置过自动清理期限，启动新版仍会按该期限清理过期截图；从未设置过的，Build 22 起默认永久保留。
 
@@ -96,8 +96,8 @@ Framo 原名 LocalShot。为保证升级后设置、截图数据、开机启动�
 克隆后可直接构建，无需配置签发私钥、账号或运行时服务：
 
 ```bash
-git clone https://github.com/tpxcer/LocalShot.git
-cd LocalShot
+git clone https://github.com/tpxcer/Framo.git
+cd Framo
 swift build -c release --product LocalShot
 sh scripts/package-app.sh
 open build/LocalShot.app
